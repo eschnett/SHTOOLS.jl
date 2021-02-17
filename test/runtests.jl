@@ -122,7 +122,7 @@ end
     # Go back to the grid (it'll be low-pass filtered)
     griddh′, n′ = MakeGridDH(cilm, lmax)
     @test n′ == n
-    
+
     # Go back to coefficients again (they must be the same)
     cilm′, lmax′ = SHExpandDH(griddh, n)
     @test lmax′ == lmax
@@ -130,6 +130,30 @@ end
 
     # Go back to the grid again (it must the be same this time)
     griddh′′, n′′ = MakeGridDH(cilm′, lmax′)
+    @test n′′ == n
+    @test griddh′′ == griddh′
+end
+
+@testset "MakeGridDHC and SHExpandDHC" begin
+    # Invent a random grid
+    n = 10
+    griddh = randn(Complex{Float64}, n, n)
+
+    # Calculate coefficients
+    cilm, lmax = SHExpandDHC(griddh, n)
+    @test lmax == 4
+
+    # Go back to the grid (it'll be low-pass filtered)
+    griddh′, n′ = MakeGridDHC(cilm, lmax)
+    @test n′ == n
+
+    # Go back to coefficients again (they must be the same)
+    cilm′, lmax′ = SHExpandDHC(griddh, n)
+    @test lmax′ == lmax
+    @test cilm′ == cilm
+
+    # Go back to the grid again (it must the be same this time)
+    griddh′′, n′′ = MakeGridDHC(cilm′, lmax′)
     @test n′′ == n
     @test griddh′′ == griddh′
 end

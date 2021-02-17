@@ -45,4 +45,6 @@ PlmIndex
 ```Julia
 SHExpandDH
 MakeGridDH
+SHExpandDHC
+MakeGridDHC
 ```
