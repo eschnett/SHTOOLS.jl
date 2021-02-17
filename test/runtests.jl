@@ -20,3 +20,6 @@ p = PLegendreA(4, 0)
 p, dp = PLegendreA_d1(4, 0)
 p = PLegendre(4, 0)
 p, dp = PLegendre_d1(4, 0)
+
+index = PlmIndex(4, 3)
+@test index == 14
