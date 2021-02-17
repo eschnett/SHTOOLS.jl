@@ -157,3 +157,7 @@ end
     @test n′′ == n
     @test griddh′′ == griddh′
 end
+
+@testset "SHGLQ" begin
+    zero, w = SHGLQ(nothing, 4)
+end

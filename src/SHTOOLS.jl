@@ -448,4 +448,46 @@ end
 
 # TODO: Add MakeGradientDH once there is a C wrapper
 
+export SHGLQ!
+function SHGLQ!(zero::AbstractVector{Cdouble}, w::AbstractVector{Cdouble},
+                plx::Optional{AbstractArray{Cdouble,2}}, lmax::Integer;
+                norm::Integer=1, csphase::Integer=1, cnorm::Integer=0,
+                exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert length(zero) ≥ lmax + 1
+    @assert length(w) == length(zero)
+    @assert lmax ≥ 0
+    if plx !== nothing
+        @assert size(plx) == (lmax + 1, (lmax + 1) * (lmax + 2) ÷ 2)
+    end
+    @assert norm ∈ (1, 2, 3, 4)
+    @assert csphase ∈ (1, -1)
+    @assert cnorm ∈ (0, 1)
+    exitstatus′ = Ref{Cint}()
+    ccall((:SHGLQ, libSHTOOLS), Cvoid,
+          (Cint, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Cdouble}, Ref{Cint}, Ref{Cint},
+           Ref{Cint}, Ref{Cint}), lmax, zero, w, optional(plx, Ptr{Cdouble}()),
+          norm, csphase, cnorm, exitstatus′)
+    if exitstatus === nothing
+        exitstatus′[] ≠ 0 && error("SHGLQ!: Error code $(exitstatus′[])")
+    else
+        exitstatus[] = exitstatus′[]
+    end
+    return zero, w
+end
+
+export SHGLQ
+function SHGLQ(plx::Optional{AbstractArray{Cdouble,2}}, lmax::Integer;
+               norm::Integer=1, csphase::Integer=1, cnorm::Integer=0,
+               exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert lmax ≥ 0
+    zero = Array{Cdouble}(undef, lmax + 1)
+    w = Array{Cdouble}(undef, lmax + 1)
+    if plx !== nothing
+        @assert size(plx) == (lmax + 1, (lmax + 1) * (lmax + 2) ÷ 2)
+    end
+    SHGLQ!(zero, w, plx, lmax; norm=norm, csphase=csphase, cnorm=cnorm,
+           exitstatus=exitstatus)
+    return zero, w
+end
+
 end
