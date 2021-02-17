@@ -251,7 +251,6 @@ end
 
 export SHExpandDH!
 function SHExpandDH!(cilm::AbstractArray{Cdouble,3},
-                     lmax::Optional{Ref{<:Integer}},
                      griddh::AbstractArray{Cdouble,2}, n::Integer;
                      norm::Integer=1, sampling::Integer=1, csphase::Integer=1,
                      lmax_calc::Optional{Integer}=nothing,
@@ -279,9 +278,6 @@ function SHExpandDH!(cilm::AbstractArray{Cdouble,3},
     else
         exitstatus[] = exitstatus′[]
     end
-    if lmax !== nothing
-        lmax[] = lmax′[]
-    end
     return cilm, Int(lmax′[])
 end
 
@@ -293,15 +289,14 @@ function SHExpandDH(griddh::AbstractArray{Cdouble,2}, n::Integer;
     @assert n > 0 && iseven(n)
     lmax_calc′ = optional(lmax_calc, n ÷ 2 - 1)
     cilm = Array{Cdouble}(undef, 2, lmax_calc′ + 1, lmax_calc′ + 1)
-    lmax = Ref{Int}()
-    SHExpandDH!(cilm, lmax, griddh, n; norm=norm, sampling=sampling,
-                csphase=csphase, lmax_calc=lmax_calc, exitstatus=exitstatus)
-    return cilm, lmax[]
+    _, lmax = SHExpandDH!(cilm, griddh, n; norm=norm, sampling=sampling,
+                          csphase=csphase, lmax_calc=lmax_calc,
+                          exitstatus=exitstatus)
+    return cilm, lmax
 end
 
 export MakeGridDH!
 function MakeGridDH!(griddh::AbstractArray{Cdouble,2},
-                     n::Optional{Ref{<:Integer}},
                      cilm::AbstractArray{Cdouble,3}, lmax::Integer;
                      norm::Integer=1, sampling::Integer=1, csphase::Integer=1,
                      lmax_calc::Optional{Integer}=nothing, extend::Integer=0,
@@ -311,7 +306,7 @@ function MakeGridDH!(griddh::AbstractArray{Cdouble,2},
     @assert sampling ∈ (1, 2)
     @assert csphase ∈ (1, -1)
     @assert extend ∈ (0, 1)
-    n′ = 2 * lmax + 2
+    n′ = Int(2 * lmax + 2)
     @assert size(griddh, 1) ≥ n′ + extend
     @assert size(griddh, 2) ≥ sampling * n′ + extend
     @assert size(cilm, 1) == 2
@@ -329,9 +324,6 @@ function MakeGridDH!(griddh::AbstractArray{Cdouble,2},
     else
         exitstatus[] = exitstatus′[]
     end
-    if n !== nothing
-        n[] = n′
-    end
     return griddh, n′
 end
 
@@ -345,15 +337,14 @@ function MakeGridDH(cilm::AbstractArray{Cdouble,3}, lmax::Integer;
     @assert extend ∈ (0, 1)
     n′ = 2 * lmax + 2
     griddh = Array{Cdouble}(undef, n′ + extend, sampling * n′ + extend)
-    _, n = MakeGridDH!(griddh, nothing, cilm, lmax; norm=norm,
-                       sampling=sampling, csphase=csphase, lmax_calc=lmax_calc,
-                       extend=extend, exitstatus=exitstatus)
+    _, n = MakeGridDH!(griddh, cilm, lmax; norm=norm, sampling=sampling,
+                       csphase=csphase, lmax_calc=lmax_calc, extend=extend,
+                       exitstatus=exitstatus)
     return griddh, n
 end
 
 export SHExpandDHC!
 function SHExpandDHC!(cilm::AbstractArray{Complex{Cdouble},3},
-                      lmax::Optional{Ref{<:Integer}},
                       griddh::AbstractArray{Complex{Cdouble},2}, n::Integer;
                       norm::Integer=1, sampling::Integer=1, csphase::Integer=1,
                       lmax_calc::Optional{Integer}=nothing,
@@ -381,9 +372,6 @@ function SHExpandDHC!(cilm::AbstractArray{Complex{Cdouble},3},
     else
         exitstatus[] = exitstatus′[]
     end
-    if lmax !== nothing
-        lmax[] = lmax′[]
-    end
     return cilm, Int(lmax′[])
 end
 
@@ -395,15 +383,14 @@ function SHExpandDHC(griddh::AbstractArray{Complex{Cdouble},2}, n::Integer;
     @assert n > 0 && iseven(n)
     lmax_calc′ = optional(lmax_calc, n ÷ 2 - 1)
     cilm = Array{Complex{Cdouble}}(undef, 2, lmax_calc′ + 1, lmax_calc′ + 1)
-    lmax = Ref{Int}()
-    SHExpandDHC!(cilm, lmax, griddh, n; norm=norm, sampling=sampling,
-                 csphase=csphase, lmax_calc=lmax_calc, exitstatus=exitstatus)
-    return cilm, lmax[]
+    _, lmax = SHExpandDHC!(cilm, griddh, n; norm=norm, sampling=sampling,
+                           csphase=csphase, lmax_calc=lmax_calc,
+                           exitstatus=exitstatus)
+    return cilm, lmax
 end
 
 export MakeGridDHC!
 function MakeGridDHC!(griddh::AbstractArray{Complex{Cdouble},2},
-                      n::Optional{Ref{<:Integer}},
                       cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer;
                       norm::Integer=1, sampling::Integer=1, csphase::Integer=1,
                       lmax_calc::Optional{Integer}=nothing, extend::Integer=0,
@@ -413,7 +400,7 @@ function MakeGridDHC!(griddh::AbstractArray{Complex{Cdouble},2},
     @assert sampling ∈ (1, 2)
     @assert csphase ∈ (1, -1)
     @assert extend ∈ (0, 1)
-    n′ = 2 * lmax + 2
+    n′ = Int(2 * lmax + 2)
     @assert size(griddh, 1) ≥ n′ + extend
     @assert size(griddh, 2) ≥ sampling * n′ + extend
     @assert size(cilm, 1) == 2
@@ -432,9 +419,6 @@ function MakeGridDHC!(griddh::AbstractArray{Complex{Cdouble},2},
     else
         exitstatus[] = exitstatus′[]
     end
-    if n !== nothing
-        n[] = n′
-    end
     return griddh, n′
 end
 
@@ -448,9 +432,9 @@ function MakeGridDHC(cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer;
     @assert extend ∈ (0, 1)
     n′ = 2 * lmax + 2
     griddh = Array{Complex{Cdouble}}(undef, n′ + extend, sampling * n′ + extend)
-    _, n = MakeGridDHC!(griddh, nothing, cilm, lmax; norm=norm,
-                        sampling=sampling, csphase=csphase, lmax_calc=lmax_calc,
-                        extend=extend, exitstatus=exitstatus)
+    _, n = MakeGridDHC!(griddh, cilm, lmax; norm=norm, sampling=sampling,
+                        csphase=csphase, lmax_calc=lmax_calc, extend=extend,
+                        exitstatus=exitstatus)
     return griddh, n
 end
 
