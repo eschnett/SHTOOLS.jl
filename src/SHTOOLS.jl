@@ -796,7 +796,8 @@ function SHExpandLSQ(d::AbstractVector{Cdouble}, lat::AbstractVector{Cdouble},
     @assert lmax ≥ 0
     cilm = Array{Cdouble}(undef, 2, lmax + 1, lmax + 1)
     _, chi2 = SHExpandLSQ!(cilm, d, lat, lon, nmax, lmax; norm=norm,
-                           csphase=csphase, weights=weights, exitstatus)
+                           csphase=csphase, weights=weights,
+                           exitstatus=exitstatus)
     return cilm, chi2
 end
 
