@@ -19,7 +19,7 @@ for op in [:PlmBar, :PlmON, :PlmSchmidt]
         export $op!
         function $op!(p::AbstractVector{Cdouble}, lmax::Integer,
                       z::Union{AbstractFloat,Integer}; csphase::Integer=1,
-                      cnorm::Integer=1,
+                      cnorm::Integer=0,
                       exitstatus::Optional{Ref{<:Integer}}=nothing)
             @assert lmax ≥ 0
             @assert csphase ∈ (1, -1)
@@ -40,7 +40,7 @@ for op in [:PlmBar, :PlmON, :PlmSchmidt]
         #
         export $op
         function $op(lmax::Integer, z::Union{AbstractFloat,Integer};
-                     csphase::Integer=1, cnorm::Integer=1,
+                     csphase::Integer=1, cnorm::Integer=0,
                      exitstatus::Optional{Ref{<:Integer}}=nothing)
             @assert lmax ≥ 0
             p = Array{Cdouble}(undef, (lmax + 1) * (lmax + 2) ÷ 2)
@@ -53,7 +53,7 @@ for op in [:PlmBar, :PlmON, :PlmSchmidt]
         function $op_d1!(p::AbstractVector{Cdouble},
                          dp::AbstractVector{Cdouble}, lmax::Integer,
                          z::Union{AbstractVector,Integer}; csphase::Integer=1,
-                         cnorm::Integer=1,
+                         cnorm::Integer=0,
                          exitstatus::Optional{Ref{<:Integer}}=nothing)
             @assert lmax ≥ 0
             @assert csphase ∈ (1, -1)
@@ -76,7 +76,7 @@ for op in [:PlmBar, :PlmON, :PlmSchmidt]
         #
         export $op_d1
         function $op_d1(lmax::Integer, z::Union{AbstractFloat,Integer};
-                        csphase::Integer=1, cnorm::Integer=1,
+                        csphase::Integer=1, cnorm::Integer=0,
                         exitstatus::Optional{Ref{<:Integer}}=nothing)
             @assert lmax ≥ 0
             p = Array{Cdouble}(undef, (lmax + 1) * (lmax + 2) ÷ 2)
