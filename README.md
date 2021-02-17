@@ -8,9 +8,14 @@ Tools.
   CI](https://github.com/eschnett/SHTOOLS.jl/workflows/CI/badge.svg)](https://github.com/eschnett/SHTOOLS.jl/actions)
 * [![Codecov](https://codecov.io/gh/eschnett/SHTOOLS.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/eschnett/SHTOOLS.jl)
 
+Note that the function arguments are not always the same. For example,
+output arguments to mutating functions come first in the argument
+list, and are omitted in non-mutating functions.
+
 ## Functions implemented so far:
 
-Legendre Functions
+### Legendre Functions:
+
 ```Julia
 PlmBar
 PlmBar_d1
@@ -33,4 +38,11 @@ PLegendre
 PLegendre_d1
 
 PlmIndex
+```
+
+### Spherical harmonic transforms
+
+```Julia
+SHExpandDH
+MakeGridDH
 ```

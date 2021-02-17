@@ -1,6 +1,10 @@
 using SHTOOLS
 using Test
 
+################################################################################
+
+# Legendre Polynomials
+
 @testset "PlmBar" begin
     p = PlmBar(4, 0)
     p′ = zeros(15)
@@ -100,4 +104,26 @@ end
 @testset "PlmIndex" begin
     index = PlmIndex(4, 3)
     @test index == 14
+end
+
+################################################################################
+
+# Spherical harmonic transforms
+
+@testset "MakeGridDH and SHExpandDH" begin
+    n = 10
+    griddh = randn(n, n)
+    cilm, lmax = SHExpandDH(griddh, n)
+    @test lmax == 4
+
+    griddh′, n′ = MakeGridDH(cilm, lmax)
+    @test n′ == n
+    
+    cilm′, lmax′ = SHExpandDH(griddh, n)
+    @test lmax′ == lmax
+    @test cilm′ == cilm
+
+    griddh′′, n′′ = MakeGridDH(cilm′, lmax′)
+    @test n′′ == n
+    @test griddh′′ == griddh′
 end
