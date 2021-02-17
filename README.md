@@ -10,6 +10,7 @@ Tools.
 
 ## Functions implemented so far:
 
+Legendre Functions
 ```Julia
 PlmBar
 PlmBar_d1
