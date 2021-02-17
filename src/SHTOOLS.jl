@@ -4,10 +4,7 @@ using SHTOOLS_jll
 
 const Optional{T} = Union{Nothing,T}
 # For optional arguments
-optional(x::Optional, x0) = x === nothing ? x0 : x
-function optional(::Type{T}, x::Optional{T}) where {T}
-    return x === nothing ? Ptr{T}() : Ref{T}(x)
-end
+optional(x::Optional, x0) = x !== nothing ? x : x0
 
 ################################################################################
 
