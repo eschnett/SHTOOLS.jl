@@ -740,4 +740,194 @@ function GLQGridCoord(lmax::Integer; extend::Integer=0,
     return latglq, longlq
 end
 
+# Other routines
+
+export SHExpandLSQ!
+function SHExpandLSQ!(cilm::AbstractArray{Cdouble,3},
+                      d::AbstractVector{Cdouble}, lat::AbstractVector{Cdouble},
+                      lon::AbstractVector{Cdouble}, nmax::Integer,
+                      lmax::Integer; norm::Integer=1, csphase::Integer=1,
+                      weights::Vector{Cdouble},
+                      exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert lmax ≥ 0
+    @assert size(cilm, 1) == 2
+    @assert size(cilm, 2) ≥ lmax + 1
+    @assert size(cilm, 3) == size(cilm, 2)
+    @assert nmax ≥ 0
+    @assert nmax ≥ (lmax + 1)^2
+    @assert length(d) ≥ nmax
+    @assert length(lat) ≥ nmax
+    @assert length(lon) ≥ nmax
+    @assert norm ∈ (1, 2, 3, 4)
+    @assert length(weights) == nmax
+    chi2′ = Ref{Cdouble}()
+    exitstatus′ = Ref{Cint}()
+    ccall((:SHExpandLSQ, libSHTOOLS), Cvoid,
+          (Ptr{Cdouble}, Cint, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Cdouble}, Cint,
+           Cint, Ref{Cint}, Ref{Cdouble}, Ref{Cint}, Ptr{Cdouble}, Ref{Cint}),
+          cilm, size(cilm, 2), d, lat, lon, nmax, lmax, norm, chi2′, csphase,
+          weights, exitstatus′)
+    if exitstatus === nothing
+        exitstatus′[] ≠ 0 && error("SHExpandLSQ!: Error code $(exitstatus′[])")
+    else
+        exitstatus[] = exitstatus′[]
+    end
+    return cilm, Cdouble(chi2′[])
+end
+
+export SHExpandLSQ
+function SHExpandLSQ(d::AbstractVector{Cdouble}, lat::AbstractVector{Cdouble},
+                     lon::AbstractVector{Cdouble}, nmax::Integer, lmax::Integer;
+                     norm::Integer=1, csphase::Integer=1,
+                     weights::Vector{Cdouble},
+                     exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert lmax ≥ 0
+    cilm = Array{Cdouble}(undef, 2, lmax + 1, lmax + 1)
+    _, chi2 = SHExpandLSQ!(cilm, d, lat, lon, nmax, lmax; norm=norm,
+                           csphase=csphase, weights=weights, exitstatus)
+    return cilm, chi2
+end
+
+export MakeGrid2d!
+function MakeGrid2d!(grid::AbstractArray{Cdouble,2},
+                     cilm::AbstractArray{Cdouble,3}, lmax::Integer,
+                     interval::Union{AbstractFloat,Integer}; norm::Integer=1,
+                     csphase::Integer=1,
+                     f::Optional{Union{AbstractFloat,Integer}}=nothing,
+                     a::Optional{Union{AbstractFloat,Integer}}=nothing,
+                     north::Union{AbstractFloat,Integer}=90.0,
+                     south::Union{AbstractFloat,Integer}=-90.0,
+                     east::Union{AbstractFloat,Integer}=360.0,
+                     west::Union{AbstractFloat,Integer}=0.0,
+                     dealloc::Bool=false,
+                     exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert interval > 0
+    @assert size(grid, 1) ≥ floor(Int, 180 / interval + 1)
+    @assert size(grid, 2) ≥ floor(Int, 360 / interval + 1)
+    @assert size(cilm, 1) == 2
+    @assert lmax ≥ 0
+    @assert size(cilm, 2) ≥ lmax + 1
+    @assert size(cilm, 3) == size(cilm, 2)
+    @assert (f !== nothing) == (a !== nothing)
+    nlat = Ref{Cint}()
+    nlong = Ref{Cint}()
+    exitstatus′ = Ref{Cint}()
+    ccall((:MakeGrid2d, libSHTOOLS), Cvoid,
+          (Ptr{Cdouble}, Cint, Cint, Ptr{Cdouble}, Cint, Cint, Cdouble,
+           Ref{Cint}, Ref{Cint}, Ref{Cint}, Ref{Cint}, Ref{Cdouble},
+           Ref{Cdouble}, Ref{Cdouble}, Ref{Cdouble}, Ref{Cdouble}, Ref{Cdouble},
+           Ref{Cint}, Ref{Cint}), grid, size(grid, 1), size(grid, 2), cilm,
+          size(cilm, 2), lmax, interval, nlat, nlong, norm, csphase,
+          optional(f, Ptr{Cdouble}()), optional(a, Ptr{Cdouble}()), north,
+          south, east, west, dealloc, exitstatus′)
+    if exitstatus === nothing
+        exitstatus′[] ≠ 0 && error("MakeGrid2d!: Error code $(exitstatus′[])")
+    else
+        exitstatus[] = exitstatus′[]
+    end
+    return grid, Int(nlat[]), Int(nlong[])
+end
+
+export MakeGrid2d
+function MakeGrid2d(cilm::AbstractArray{Cdouble,3}, lmax::Integer,
+                    interval::Union{AbstractFloat,Integer}; norm::Integer=1,
+                    csphase::Integer=1,
+                    f::Optional{Union{AbstractFloat,Integer}}=nothing,
+                    a::Optional{Union{AbstractFloat,Integer}}=nothing,
+                    north::Union{AbstractFloat,Integer}=90.0,
+                    south::Union{AbstractFloat,Integer}=-90.0,
+                    east::Union{AbstractFloat,Integer}=360.0,
+                    west::Union{AbstractFloat,Integer}=0.0, dealloc::Bool=false,
+                    exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert interval > 0
+    grid = Array{Cdouble}(undef, floor(Int, 180 / interval + 1),
+                          floor(Int, 360 / interval + 1))
+    MakeGrid2d!(grid, cilm, lmax, interval; norm=norm, csphase=csphase, f=f,
+                a=a, north=north, south=south, east=east, west=west,
+                dealloc=dealloc, exitstatus=exitstatus)
+    return grid
+end
+
+export MakeGridPoint
+function MakeGridPoint(cilm::AbstractArray{Cdouble,3}, lmax::Integer,
+                       lat::Union{AbstractFloat,Integer},
+                       lon::Union{AbstractFloat,Integer}; norm::Integer=1,
+                       csphase::Integer=1, dealloc::Bool=false)
+    @assert lmax ≥ 0
+    @assert size(cilm, 1) == 2
+    @assert size(cilm, 2) ≥ lmax + 1
+    @assert size(cilm, 3) ≥ size(cilm, 2)
+    @assert norm ∈ (1, 2, 3, 4)
+    @assert csphase ∈ (1, -1)
+    value = ccall((:MakeGridPoint, libSHTOOLS), Cdouble,
+                  (Ptr{Cdouble}, Cint, Cint, Cdouble, Cdouble, Ref{Cint},
+                   Ref{Cint}, Ref{Cint}), cilm, size(cilm, 2), lmax, lat, lon,
+                  norm, csphase, dealloc)
+    return Float64(value)
+end
+
+export MakeGridPointC
+function MakeGridPointC(cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer,
+                        lat::Union{AbstractFloat,Integer},
+                        lon::Union{AbstractFloat,Integer}; norm::Integer=1,
+                        csphase::Integer=1, dealloc::Bool=false)
+    @assert lmax ≥ 0
+    @assert size(cilm, 1) == 2
+    @assert size(cilm, 2) ≥ lmax + 1
+    @assert size(cilm, 3) ≥ size(cilm, 2)
+    @assert norm ∈ (1, 2, 3, 4)
+    @assert csphase ∈ (1, -1)
+    value = ccall((:MakeGridPointC, libSHTOOLS), Complex{Cdouble},
+                  (Ptr{Complex{Cdouble}}, Cint, Cint, Cdouble, Cdouble,
+                   Ref{Cint}, Ref{Cint}, Ref{Cint}), cilm, size(cilm, 2), lmax,
+                  lat, lon, norm, csphase, dealloc)
+    return Complex{Float64}(value)
+end
+
+export SHMultiply!
+function SHMultiply!(cilmout::AbstractArray{Cdouble,3},
+                     cilm1::AbstractArray{Cdouble,3}, lmax1::Integer,
+                     cilm2::AbstractArray{Cdouble,3}, lmax2::Integer;
+                     precomp::Bool=false, norm::Integer=1, csphase::Integer=1,
+                     exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert lmax1 ≥ 0
+    @assert lmax2 ≥ 0
+    @assert size(cilmout, 1) == 2
+    @assert size(cilmout, 2) ≥ lmax1 + lmax2 + 1
+    @assert size(cilmout, 3) == size(cilmout, 2)
+    @assert size(cilm1, 1) == 2
+    @assert size(cilm1, 2) ≥ lmax1 + 1
+    @assert size(cilm1, 3) == size(cilm1, 2)
+    @assert size(cilm2, 1) == 2
+    @assert size(cilm2, 2) ≥ lmax2 + 1
+    @assert size(cilm2, 3) == size(cilm2, 2)
+    @assert norm ∈ (1, 2, 3, 4)
+    @assert csphase ∈ (1, -1)
+    exitstatus′ = Ref{Cint}()
+    ccall((:SHMultiply, libSHTOOLS), Cvoid,
+          (Ptr{Cdouble}, Cint, Ptr{Cdouble}, Cint, Cint, Ptr{Cdouble}, Cint,
+           Cint, Ref{Cint}, Ref{Cint}, Ref{Cint}, Ref{Cint}), cilmout,
+          size(cilmout, 2), cilm1, size(cilm1, 2), lmax1, cilm2, size(cilm2, 2),
+          lmax2, precomp, norm, csphase, exitstatus′)
+    if exitstatus === nothing
+        exitstatus′[] ≠ 0 && error("SHMultiply!: Error code $(exitstatus′[])")
+    else
+        exitstatus[] = exitstatus′[]
+    end
+    return cilmout
+end
+
+export SHMultiply
+function SHMultiply(cilm1::AbstractArray{Cdouble,3}, lmax1::Integer,
+                    cilm2::AbstractArray{Cdouble,3}, lmax2::Integer;
+                    precomp::Bool=false, norm::Integer=1, csphase::Integer=1,
+                    exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert lmax1 ≥ 0
+    @assert lmax2 ≥ 0
+    cilmout = Array{Cdouble}(undef, 2, lmax1 + lmax2 + 1, lmax1 + lmax2 + 1)
+    SHMultiply!(cilmout, cilm1, lmax1, cilm2, lmax2; precomp=precomp, norm=norm,
+                csphase=csphase, exitstatus=exitstatus)
+    return cilmout
+end
+
 end

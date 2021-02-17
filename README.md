@@ -54,4 +54,10 @@ MakeGridGLQ
 SHExpandGLQC
 MakeGridGLQC
 GLQGridCoord
+
+SHExpandLSQ
+MakeGrid2d
+MakeGridPoint
+MakeGridPointC
+SHMultiply
 ```
