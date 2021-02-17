@@ -47,4 +47,8 @@ SHExpandDH
 MakeGridDH
 SHExpandDHC
 MakeGridDHC
+
+SHGLQ
+SHExpandGLQ
+MakeGridGLQ
 ```

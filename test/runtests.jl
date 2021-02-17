@@ -129,9 +129,9 @@ end
     @test cilm′ == cilm
 
     # Go back to the grid again (it must the be same this time)
-    griddh′′, n′′ = MakeGridDH(cilm′, lmax′)
-    @test n′′ == n
-    @test griddh′′ == griddh′
+    griddh″, n″ = MakeGridDH(cilm′, lmax′)
+    @test n″ == n
+    @test griddh″ == griddh′
 end
 
 @testset "MakeGridDHC and SHExpandDHC" begin
@@ -153,11 +153,31 @@ end
     @test cilm′ == cilm
 
     # Go back to the grid again (it must the be same this time)
-    griddh′′, n′′ = MakeGridDHC(cilm′, lmax′)
-    @test n′′ == n
-    @test griddh′′ == griddh′
+    griddh″, n″ = MakeGridDHC(cilm′, lmax′)
+    @test n″ == n
+    @test griddh″ == griddh′
 end
 
-@testset "SHGLQ" begin
-    zero, w = SHGLQ(nothing, 4)
+@testset "SHGLQ and SHExpandGLQ" begin
+    lmax = 4
+    zero, w = SHGLQ(nothing, lmax)
+
+    # Invent a random grid
+    gridglq = randn(lmax + 1, 2 * lmax + 1)
+
+    # Calculate coefficients
+    cilm = SHExpandGLQ(lmax, gridglq, w, nothing, zero)
+
+    # Go back to the grid (it'll be low-pass filtered)
+    gridglq′ = MakeGridGLQ(cilm, lmax, nothing, zero)
+    @test size(gridglq′) == size(gridglq)
+
+    # Go back to coefficients again (they must be the same)
+    cilm′ = SHExpandGLQ(lmax, gridglq′, w, nothing, zero)
+    @test isapprox(cilm′, cilm)
+
+    # Go back to the grid again (it must the be same this time)
+    gridglq″ = MakeGridGLQ(cilm′, lmax, nothing, zero)
+    @test size(gridglq″) == size(gridglq′)
+    @test isapprox(gridglq″, gridglq′)
 end

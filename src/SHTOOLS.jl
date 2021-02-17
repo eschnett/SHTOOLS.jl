@@ -10,6 +10,12 @@ optional(x::Optional, x0) = x !== nothing ? x : x0
 
 # Legendre functions
 
+# 4π normalized
+# Orthonormalized
+# Schmidt semi-normalized
+# Unnormalized
+# Utilities
+
 for op in [:PlmBar, :PlmON, :PlmSchmidt]
     op! = Symbol(op, "!")
     op_d1 = Symbol(op, "_d1")
@@ -240,6 +246,8 @@ end
 ################################################################################
 
 # Spherical harmonic transforms
+
+# Equally sampled (N×N) and equally spaced (N×2N) grids
 
 export SHExpandDH!
 function SHExpandDH!(cilm::AbstractArray{Cdouble,3},
@@ -475,6 +483,8 @@ function SHGLQ!(zero::AbstractVector{Cdouble}, w::AbstractVector{Cdouble},
     return zero, w
 end
 
+# Gauss-Legendre quadrature grids
+
 export SHGLQ
 function SHGLQ(plx::Optional{AbstractArray{Cdouble,2}}, lmax::Integer;
                norm::Integer=1, csphase::Integer=1, cnorm::Integer=0,
@@ -488,6 +498,116 @@ function SHGLQ(plx::Optional{AbstractArray{Cdouble,2}}, lmax::Integer;
     SHGLQ!(zero, w, plx, lmax; norm=norm, csphase=csphase, cnorm=cnorm,
            exitstatus=exitstatus)
     return zero, w
+end
+
+export SHExpandGLQ!
+function SHExpandGLQ!(cilm::AbstractArray{Cdouble,3}, lmax::Integer,
+                      gridglq::AbstractArray{Cdouble,2},
+                      w::AbstractVector{Cdouble},
+                      plx::Optional{AbstractArray{Cdouble,2}},
+                      zero::Optional{AbstractVector{Cdouble}}; norm::Integer=1,
+                      csphase::Integer=1, lmax_calc::Optional{Integer}=nothing,
+                      exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert lmax ≥ 0
+    lmax_calc′ = optional(lmax_calc, lmax)
+    @assert lmax_calc′ ≥ 0
+    @assert size(cilm, 1) == 2
+    @assert size(cilm, 2) ≥ lmax_calc′ + 1
+    @assert size(cilm, 3) == size(cilm, 2)
+    @assert size(gridglq) == (lmax + 1, 2 * lmax + 1)
+    @assert length(w) == lmax + 1
+    @assert (plx !== nothing) + (zero !== nothing) == 1
+    if plx !== nothing
+        @assert size(plx) == (lmax + 1, (lmax + 1) * (lmax + 2) ÷ 2)
+    end
+    if zero !== nothing
+        @assert length(zero) == lmax + 1
+    end
+    @assert norm ∈ (1, 2, 3, 4)
+    @assert csphase ∈ (1, -1)
+    exitstatus′ = Ref{Cint}()
+    ccall((:SHExpandGLQ, libSHTOOLS), Cvoid,
+          (Ptr{Cdouble}, Cint, Cint, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Cdouble},
+           Ptr{Cdouble}, Ref{Cint}, Ref{Cint}, Ref{Cint}, Ref{Cint}), cilm,
+          size(cilm, 2), lmax, gridglq, w, optional(plx, Ptr{Cdouble}()),
+          optional(zero, Ptr{Cdouble}()), norm, csphase, lmax_calc′,
+          exitstatus′)
+    if exitstatus === nothing
+        exitstatus′[] ≠ 0 && error("SHExpandGLQ!: Error code $(exitstatus′[])")
+    else
+        exitstatus[] = exitstatus′[]
+    end
+    return cilm
+end
+
+export SHExpandGLQ
+function SHExpandGLQ(lmax::Integer, gridglq::AbstractArray{Cdouble,2},
+                     w::AbstractVector{Cdouble},
+                     plx::Optional{AbstractArray{Cdouble,2}},
+                     zero::Optional{AbstractVector{Cdouble}}; norm::Integer=1,
+                     csphase::Integer=1, lmax_calc::Optional{Integer}=nothing,
+                     exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert lmax ≥ 0
+    lmax_calc′ = optional(lmax_calc, lmax)
+    @assert lmax_calc′ ≥ 0
+    cilm = Array{Cdouble}(undef, 2, lmax_calc′ + 1, lmax_calc′ + 1)
+    SHExpandGLQ!(cilm, lmax, gridglq, w, plx, zero; norm=norm, csphase=csphase,
+                 lmax_calc=lmax_calc, exitstatus=exitstatus)
+    return cilm
+end
+
+export MakeGridGLQ!
+function MakeGridGLQ!(gridglq::AbstractArray{Cdouble,2},
+                      cilm::AbstractArray{Cdouble,3}, lmax::Integer,
+                      plx::Optional{AbstractArray{Cdouble,2}},
+                      zero::Optional{AbstractVector{Cdouble}}; norm::Integer=1,
+                      csphase::Integer=1, lmax_calc::Optional{Integer}=nothing,
+                      extend::Integer=0,
+                      exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert lmax ≥ 0
+    @assert extend ∈ (0, 1)
+    @assert size(gridglq) == (lmax + 1, 2 * lmax + 1 + extend)
+    @assert size(cilm, 1) == 2
+    @assert size(cilm, 2) ≥ 1
+    @assert size(cilm, 3) == size(cilm, 2)
+    @assert (plx !== nothing) + (zero !== nothing) == 1
+    if plx !== nothing
+        @assert size(plx) == (lmax + 1, (lmax + 1) * (lmax + 2) ÷ 2)
+    end
+    if zero !== nothing
+        @assert length(zero) == lmax + 1
+    end
+    @assert norm ∈ (1, 2, 3, 4)
+    @assert csphase ∈ (1, -1)
+    lmax_calc′ = optional(lmax_calc, lmax)
+    exitstatus′ = Ref{Cint}()
+    ccall((:MakeGridGLQ, libSHTOOLS), Cvoid,
+          (Ptr{Cdouble}, Cint, Cint, Ptr{Cdouble}, Cint, Cint, Ptr{Cdouble},
+           Ptr{Cdouble}, Ref{Cint}, Ref{Cint}, Ref{Cint}, Ref{Cint}, Ref{Cint}),
+          gridglq, size(gridglq, 1), size(gridglq, 2), cilm, size(cilm, 2),
+          lmax, optional(plx, Ptr{Cdouble}()), optional(zero, Ptr{Cdouble}()),
+          norm, csphase, lmax_calc′, extend, exitstatus′)
+    if exitstatus === nothing
+        exitstatus′[] ≠ 0 && error("MakeGridGLQ!: Error code $(exitstatus′[])")
+    else
+        exitstatus[] = exitstatus′[]
+    end
+    return gridglq
+end
+
+export MakeGridGLQ
+function MakeGridGLQ(cilm::AbstractArray{Cdouble,3}, lmax::Integer,
+                     plx::Optional{AbstractArray{Cdouble,2}},
+                     zero::Optional{AbstractVector{Cdouble}}; norm::Integer=1,
+                     csphase::Integer=1, lmax_calc::Optional{Integer}=nothing,
+                     extend::Integer=0,
+                     exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert lmax ≥ 0
+    @assert extend ∈ (0, 1)
+    gridglq = Array{Cdouble}(undef, lmax + 1, 2 * lmax + 1 + extend)
+    MakeGridGLQ!(gridglq, cilm, lmax, plx, zero; norm=norm, csphase=csphase,
+                 lmax_calc=lmax_calc, extend=extend, exitstatus=exitstatus)
+    return gridglq
 end
 
 end
