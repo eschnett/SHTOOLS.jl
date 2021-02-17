@@ -594,4 +594,150 @@ function MakeGridGLQ(cilm::AbstractArray{Cdouble,3}, lmax::Integer,
     return gridglq
 end
 
+export SHExpandGLQC!
+function SHExpandGLQC!(cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer,
+                       gridglq::AbstractArray{Complex{Cdouble},2},
+                       w::AbstractVector{Cdouble},
+                       plx::Optional{AbstractArray{Cdouble,2}},
+                       zero::Optional{AbstractVector{Cdouble}}; norm::Integer=1,
+                       csphase::Integer=1, lmax_calc::Optional{Integer}=nothing,
+                       exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert lmax ≥ 0
+    lmax_calc′ = optional(lmax_calc, lmax)
+    @assert lmax_calc′ ≥ 0
+    @assert size(cilm, 1) == 2
+    @assert size(cilm, 2) ≥ lmax_calc′ + 1
+    @assert size(cilm, 3) == size(cilm, 2)
+    @assert size(gridglq) == (lmax + 1, 2 * lmax + 1)
+    @assert length(w) == lmax + 1
+    @assert (plx !== nothing) + (zero !== nothing) == 1
+    if plx !== nothing
+        @assert size(plx) == (lmax + 1, (lmax + 1) * (lmax + 2) ÷ 2)
+    end
+    if zero !== nothing
+        @assert length(zero) == lmax + 1
+    end
+    @assert norm ∈ (1, 2, 3, 4)
+    @assert csphase ∈ (1, -1)
+    exitstatus′ = Ref{Cint}()
+    ccall((:SHExpandGLQC, libSHTOOLS), Cvoid,
+          (Ptr{Complex{Cdouble}}, Cint, Cint, Ptr{Complex{Cdouble}},
+           Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Cdouble}, Ref{Cint}, Ref{Cint},
+           Ref{Cint}, Ref{Cint}), cilm, size(cilm, 2), lmax, gridglq, w,
+          optional(plx, Ptr{Cdouble}()), optional(zero, Ptr{Cdouble}()), norm,
+          csphase, lmax_calc′, exitstatus′)
+    if exitstatus === nothing
+        exitstatus′[] ≠ 0 && error("SHExpandGLQC!: Error code $(exitstatus′[])")
+    else
+        exitstatus[] = exitstatus′[]
+    end
+    return cilm
+end
+
+export SHExpandGLQC
+function SHExpandGLQC(lmax::Integer, gridglq::AbstractArray{Complex{Cdouble},2},
+                      w::AbstractVector{Cdouble},
+                      plx::Optional{AbstractArray{Cdouble,2}},
+                      zero::Optional{AbstractVector{Cdouble}}; norm::Integer=1,
+                      csphase::Integer=1, lmax_calc::Optional{Integer}=nothing,
+                      exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert lmax ≥ 0
+    lmax_calc′ = optional(lmax_calc, lmax)
+    @assert lmax_calc′ ≥ 0
+    cilm = Array{Complex{Cdouble}}(undef, 2, lmax_calc′ + 1, lmax_calc′ + 1)
+    SHExpandGLQC!(cilm, lmax, gridglq, w, plx, zero; norm=norm, csphase=csphase,
+                  lmax_calc=lmax_calc, exitstatus=exitstatus)
+    return cilm
+end
+
+export MakeGridGLQC!
+function MakeGridGLQC!(gridglq::AbstractArray{Complex{Cdouble},2},
+                       cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer,
+                       plx::Optional{AbstractArray{Cdouble,2}},
+                       zero::Optional{AbstractVector{Cdouble}}; norm::Integer=1,
+                       csphase::Integer=1, lmax_calc::Optional{Integer}=nothing,
+                       extend::Integer=0,
+                       exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert lmax ≥ 0
+    @assert extend ∈ (0, 1)
+    @assert size(gridglq) == (lmax + 1, 2 * lmax + 1 + extend)
+    @assert size(cilm, 1) == 2
+    @assert size(cilm, 2) ≥ 1
+    @assert size(cilm, 3) == size(cilm, 2)
+    @assert (plx !== nothing) + (zero !== nothing) == 1
+    if plx !== nothing
+        @assert size(plx) == (lmax + 1, (lmax + 1) * (lmax + 2) ÷ 2)
+    end
+    if zero !== nothing
+        @assert length(zero) == lmax + 1
+    end
+    @assert norm ∈ (1, 2, 3, 4)
+    @assert csphase ∈ (1, -1)
+    lmax_calc′ = optional(lmax_calc, lmax)
+    exitstatus′ = Ref{Cint}()
+    ccall((:MakeGridGLQC, libSHTOOLS), Cvoid,
+          (Ptr{Complex{Cdouble}}, Cint, Cint, Ptr{Complex{Cdouble}}, Cint, Cint,
+           Ptr{Cdouble}, Ptr{Cdouble}, Ref{Cint}, Ref{Cint}, Ref{Cint},
+           Ref{Cint}, Ref{Cint}), gridglq, size(gridglq, 1), size(gridglq, 2),
+          cilm, size(cilm, 2), lmax, optional(plx, Ptr{Cdouble}()),
+          optional(zero, Ptr{Cdouble}()), norm, csphase, lmax_calc′, extend,
+          exitstatus′)
+    if exitstatus === nothing
+        exitstatus′[] ≠ 0 && error("MakeGridGLQC!: Error code $(exitstatus′[])")
+    else
+        exitstatus[] = exitstatus′[]
+    end
+    return gridglq
+end
+
+export MakeGridGLQC
+function MakeGridGLQC(cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer,
+                      plx::Optional{AbstractArray{Cdouble,2}},
+                      zero::Optional{AbstractVector{Cdouble}}; norm::Integer=1,
+                      csphase::Integer=1, lmax_calc::Optional{Integer}=nothing,
+                      extend::Integer=0,
+                      exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert lmax ≥ 0
+    @assert extend ∈ (0, 1)
+    gridglq = Array{Complex{Cdouble}}(undef, lmax + 1, 2 * lmax + 1 + extend)
+    MakeGridGLQC!(gridglq, cilm, lmax, plx, zero; norm=norm, csphase=csphase,
+                  lmax_calc=lmax_calc, extend=extend, exitstatus=exitstatus)
+    return gridglq
+end
+
+export GLQGridCoord!
+function GLQGridCoord!(latglq::AbstractVector{Cdouble},
+                       longlq::AbstractVector{Cdouble}, lmax::Integer;
+                       extend::Integer=0,
+                       exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert lmax ≥ 0
+    @assert extend ∈ (0, 1)
+    @assert length(latglq) ≥ lmax + 1
+    @assert length(longlq) ≥ 2 * lmax + 1 + extend
+    nlat′ = Ref{Cint}()
+    nlong′ = Ref{Cint}()
+    exitstatus′ = Ref{Cint}()
+    ccall((:GLQGridCoord, libSHTOOLS), Cvoid,
+          (Ptr{Cdouble}, Cint, Ptr{Cdouble}, Cint, Cint, Ref{Cint}, Ref{Cint},
+           Ref{Cint}, Ref{Cint}), latglq, length(latglq), longlq,
+          length(longlq), lmax, nlat′, nlong′, extend, exitstatus′)
+    if exitstatus === nothing
+        exitstatus′[] ≠ 0 && error("GLQGridCoord!: Error code $(exitstatus′[])")
+    else
+        exitstatus[] = exitstatus′[]
+    end
+    return latglq, longlq, Int(nlat′[]), Int(nlong′[])
+end
+
+export GLQGridCoord
+function GLQGridCoord(lmax::Integer; extend::Integer=0,
+                      exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert lmax ≥ 0
+    @assert extend ∈ (0, 1)
+    latglq = Array{Cdouble}(undef, lmax + 1)
+    longlq = Array{Cdouble}(undef, 2 * lmax + 1 + extend)
+    GLQGridCoord!(latglq, longlq, lmax; extend=extend, exitstatus=exitstatus)
+    return latglq, longlq
+end
+
 end

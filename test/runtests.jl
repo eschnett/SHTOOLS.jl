@@ -158,7 +158,7 @@ end
     @test griddh″ == griddh′
 end
 
-@testset "SHGLQ and SHExpandGLQ" begin
+@testset "SHExpandGLQ and MakeGridGLQ" begin
     lmax = 4
     zero, w = SHGLQ(nothing, lmax)
 
@@ -178,6 +178,33 @@ end
 
     # Go back to the grid again (it must the be same this time)
     gridglq″ = MakeGridGLQ(cilm′, lmax, nothing, zero)
+    @test size(gridglq″) == size(gridglq′)
+    @test isapprox(gridglq″, gridglq′)
+
+    latglq, longlq = GLQGridCoord(lmax)
+    @show (length(latglq), length(longlq)) == size(gridglq)
+end
+
+@testset "SHExpandGLQC and MakeGridGLQC" begin
+    lmax = 4
+    zero, w = SHGLQ(nothing, lmax)
+
+    # Invent a random grid
+    gridglq = randn(Complex{Cdouble}, lmax + 1, 2 * lmax + 1)
+
+    # Calculate coefficients
+    cilm = SHExpandGLQC(lmax, gridglq, w, nothing, zero)
+
+    # Go back to the grid (it'll be low-pass filtered)
+    gridglq′ = MakeGridGLQC(cilm, lmax, nothing, zero)
+    @test size(gridglq′) == size(gridglq)
+
+    # Go back to coefficients again (they must be the same)
+    cilm′ = SHExpandGLQC(lmax, gridglq′, w, nothing, zero)
+    @test isapprox(cilm′, cilm)
+
+    # Go back to the grid again (it must the be same this time)
+    gridglq″ = MakeGridGLQC(cilm′, lmax, nothing, zero)
     @test size(gridglq″) == size(gridglq′)
     @test isapprox(gridglq″, gridglq′)
 end

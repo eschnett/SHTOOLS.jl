@@ -51,4 +51,7 @@ MakeGridDHC
 SHGLQ
 SHExpandGLQ
 MakeGridGLQ
+SHExpandGLQC
+MakeGridGLQC
+GLQGridCoord
 ```
