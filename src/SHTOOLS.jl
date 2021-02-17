@@ -343,12 +343,11 @@ function MakeGridDH(cilm::AbstractArray{Cdouble,3}, lmax::Integer;
     return griddh, n
 end
 
-export SHExpandDHC!
-function SHExpandDHC!(cilm::AbstractArray{Complex{Cdouble},3},
-                      griddh::AbstractArray{Complex{Cdouble},2}, n::Integer;
-                      norm::Integer=1, sampling::Integer=1, csphase::Integer=1,
-                      lmax_calc::Optional{Integer}=nothing,
-                      exitstatus::Optional{Ref{<:Integer}}=nothing)
+function SHExpandDH!(cilm::AbstractArray{Complex{Cdouble},3},
+                     griddh::AbstractArray{Complex{Cdouble},2}, n::Integer;
+                     norm::Integer=1, sampling::Integer=1, csphase::Integer=1,
+                     lmax_calc::Optional{Integer}=nothing,
+                     exitstatus::Optional{Ref{<:Integer}}=nothing)
     @assert n > 0 && iseven(n)
     @assert norm ∈ (1, 2, 3, 4)
     @assert sampling ∈ (1, 2)
@@ -375,26 +374,29 @@ function SHExpandDHC!(cilm::AbstractArray{Complex{Cdouble},3},
     return cilm, Int(lmax′[])
 end
 
-export SHExpandDHC
-function SHExpandDHC(griddh::AbstractArray{Complex{Cdouble},2}, n::Integer;
-                     norm::Integer=1, sampling::Integer=1, csphase::Integer=1,
-                     lmax_calc::Optional{Integer}=nothing,
-                     exitstatus::Optional{Ref{<:Integer}}=nothing)
+function SHExpandDH(griddh::AbstractArray{Complex{Cdouble},2}, n::Integer;
+                    norm::Integer=1, sampling::Integer=1, csphase::Integer=1,
+                    lmax_calc::Optional{Integer}=nothing,
+                    exitstatus::Optional{Ref{<:Integer}}=nothing)
     @assert n > 0 && iseven(n)
     lmax_calc′ = optional(lmax_calc, n ÷ 2 - 1)
     cilm = Array{Complex{Cdouble}}(undef, 2, lmax_calc′ + 1, lmax_calc′ + 1)
-    _, lmax = SHExpandDHC!(cilm, griddh, n; norm=norm, sampling=sampling,
-                           csphase=csphase, lmax_calc=lmax_calc,
-                           exitstatus=exitstatus)
+    _, lmax = SHExpandDH!(cilm, griddh, n; norm=norm, sampling=sampling,
+                          csphase=csphase, lmax_calc=lmax_calc,
+                          exitstatus=exitstatus)
     return cilm, lmax
 end
 
-export MakeGridDHC!
-function MakeGridDHC!(griddh::AbstractArray{Complex{Cdouble},2},
-                      cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer;
-                      norm::Integer=1, sampling::Integer=1, csphase::Integer=1,
-                      lmax_calc::Optional{Integer}=nothing, extend::Integer=0,
-                      exitstatus::Optional{Ref{<:Integer}}=nothing)
+export SHExpandDHC!
+const SHExpandDHC! = SHExpandDH!
+export SHExpandDHC
+const SHExpandDHC = SHExpandDH
+
+function MakeGridDH!(griddh::AbstractArray{Complex{Cdouble},2},
+                     cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer;
+                     norm::Integer=1, sampling::Integer=1, csphase::Integer=1,
+                     lmax_calc::Optional{Integer}=nothing, extend::Integer=0,
+                     exitstatus::Optional{Ref{<:Integer}}=nothing)
     @assert lmax ≥ 0
     @assert norm ∈ (1, 2, 3, 4)
     @assert sampling ∈ (1, 2)
@@ -422,21 +424,25 @@ function MakeGridDHC!(griddh::AbstractArray{Complex{Cdouble},2},
     return griddh, n′
 end
 
-export MakeGridDHC
-function MakeGridDHC(cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer;
-                     norm::Integer=1, sampling::Integer=1, csphase::Integer=1,
-                     lmax_calc::Optional{Integer}=nothing, extend::Integer=0,
-                     exitstatus::Optional{Ref{<:Integer}}=nothing)
+function MakeGridDH(cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer;
+                    norm::Integer=1, sampling::Integer=1, csphase::Integer=1,
+                    lmax_calc::Optional{Integer}=nothing, extend::Integer=0,
+                    exitstatus::Optional{Ref{<:Integer}}=nothing)
     @assert lmax ≥ 0
     @assert sampling ∈ (1, 2)
     @assert extend ∈ (0, 1)
     n′ = 2 * lmax + 2
     griddh = Array{Complex{Cdouble}}(undef, n′ + extend, sampling * n′ + extend)
-    _, n = MakeGridDHC!(griddh, cilm, lmax; norm=norm, sampling=sampling,
-                        csphase=csphase, lmax_calc=lmax_calc, extend=extend,
-                        exitstatus=exitstatus)
+    _, n = MakeGridDH!(griddh, cilm, lmax; norm=norm, sampling=sampling,
+                       csphase=csphase, lmax_calc=lmax_calc, extend=extend,
+                       exitstatus=exitstatus)
     return griddh, n
 end
+
+export MakeGridDHC!
+const MakeGridDHC! = MakeGridDH!
+export MakeGridDHC
+const MakeGridDHC = MakeGridDH
 
 # TODO: Add MakeGradientDH once there is a C wrapper
 
@@ -594,14 +600,13 @@ function MakeGridGLQ(cilm::AbstractArray{Cdouble,3}, lmax::Integer,
     return gridglq
 end
 
-export SHExpandGLQC!
-function SHExpandGLQC!(cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer,
-                       gridglq::AbstractArray{Complex{Cdouble},2},
-                       w::AbstractVector{Cdouble},
-                       plx::Optional{AbstractArray{Cdouble,2}},
-                       zero::Optional{AbstractVector{Cdouble}}; norm::Integer=1,
-                       csphase::Integer=1, lmax_calc::Optional{Integer}=nothing,
-                       exitstatus::Optional{Ref{<:Integer}}=nothing)
+function SHExpandGLQ!(cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer,
+                      gridglq::AbstractArray{Complex{Cdouble},2},
+                      w::AbstractVector{Cdouble},
+                      plx::Optional{AbstractArray{Cdouble,2}},
+                      zero::Optional{AbstractVector{Cdouble}}; norm::Integer=1,
+                      csphase::Integer=1, lmax_calc::Optional{Integer}=nothing,
+                      exitstatus::Optional{Ref{<:Integer}}=nothing)
     @assert lmax ≥ 0
     lmax_calc′ = optional(lmax_calc, lmax)
     @assert lmax_calc′ ≥ 0
@@ -634,30 +639,33 @@ function SHExpandGLQC!(cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer,
     return cilm
 end
 
-export SHExpandGLQC
-function SHExpandGLQC(lmax::Integer, gridglq::AbstractArray{Complex{Cdouble},2},
-                      w::AbstractVector{Cdouble},
-                      plx::Optional{AbstractArray{Cdouble,2}},
-                      zero::Optional{AbstractVector{Cdouble}}; norm::Integer=1,
-                      csphase::Integer=1, lmax_calc::Optional{Integer}=nothing,
-                      exitstatus::Optional{Ref{<:Integer}}=nothing)
+function SHExpandGLQ(lmax::Integer, gridglq::AbstractArray{Complex{Cdouble},2},
+                     w::AbstractVector{Cdouble},
+                     plx::Optional{AbstractArray{Cdouble,2}},
+                     zero::Optional{AbstractVector{Cdouble}}; norm::Integer=1,
+                     csphase::Integer=1, lmax_calc::Optional{Integer}=nothing,
+                     exitstatus::Optional{Ref{<:Integer}}=nothing)
     @assert lmax ≥ 0
     lmax_calc′ = optional(lmax_calc, lmax)
     @assert lmax_calc′ ≥ 0
     cilm = Array{Complex{Cdouble}}(undef, 2, lmax_calc′ + 1, lmax_calc′ + 1)
-    SHExpandGLQC!(cilm, lmax, gridglq, w, plx, zero; norm=norm, csphase=csphase,
-                  lmax_calc=lmax_calc, exitstatus=exitstatus)
+    SHExpandGLQ!(cilm, lmax, gridglq, w, plx, zero; norm=norm, csphase=csphase,
+                 lmax_calc=lmax_calc, exitstatus=exitstatus)
     return cilm
 end
 
-export MakeGridGLQC!
-function MakeGridGLQC!(gridglq::AbstractArray{Complex{Cdouble},2},
-                       cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer,
-                       plx::Optional{AbstractArray{Cdouble,2}},
-                       zero::Optional{AbstractVector{Cdouble}}; norm::Integer=1,
-                       csphase::Integer=1, lmax_calc::Optional{Integer}=nothing,
-                       extend::Integer=0,
-                       exitstatus::Optional{Ref{<:Integer}}=nothing)
+export SHExpandGLQC!
+const SHExpandGLQC! = SHExpandGLQ!
+export SHExpandGLQC
+const SHExpandGLQC = SHExpandGLQ
+
+function MakeGridGLQ!(gridglq::AbstractArray{Complex{Cdouble},2},
+                      cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer,
+                      plx::Optional{AbstractArray{Cdouble,2}},
+                      zero::Optional{AbstractVector{Cdouble}}; norm::Integer=1,
+                      csphase::Integer=1, lmax_calc::Optional{Integer}=nothing,
+                      extend::Integer=0,
+                      exitstatus::Optional{Ref{<:Integer}}=nothing)
     @assert lmax ≥ 0
     @assert extend ∈ (0, 1)
     @assert size(gridglq) == (lmax + 1, 2 * lmax + 1 + extend)
@@ -690,20 +698,24 @@ function MakeGridGLQC!(gridglq::AbstractArray{Complex{Cdouble},2},
     return gridglq
 end
 
-export MakeGridGLQC
-function MakeGridGLQC(cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer,
-                      plx::Optional{AbstractArray{Cdouble,2}},
-                      zero::Optional{AbstractVector{Cdouble}}; norm::Integer=1,
-                      csphase::Integer=1, lmax_calc::Optional{Integer}=nothing,
-                      extend::Integer=0,
-                      exitstatus::Optional{Ref{<:Integer}}=nothing)
+function MakeGridGLQ(cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer,
+                     plx::Optional{AbstractArray{Cdouble,2}},
+                     zero::Optional{AbstractVector{Cdouble}}; norm::Integer=1,
+                     csphase::Integer=1, lmax_calc::Optional{Integer}=nothing,
+                     extend::Integer=0,
+                     exitstatus::Optional{Ref{<:Integer}}=nothing)
     @assert lmax ≥ 0
     @assert extend ∈ (0, 1)
     gridglq = Array{Complex{Cdouble}}(undef, lmax + 1, 2 * lmax + 1 + extend)
-    MakeGridGLQC!(gridglq, cilm, lmax, plx, zero; norm=norm, csphase=csphase,
-                  lmax_calc=lmax_calc, extend=extend, exitstatus=exitstatus)
+    MakeGridGLQ!(gridglq, cilm, lmax, plx, zero; norm=norm, csphase=csphase,
+                 lmax_calc=lmax_calc, extend=extend, exitstatus=exitstatus)
     return gridglq
 end
+
+export MakeGridGLQC!
+const MakeGridGLQC! = MakeGridGLQ!
+export MakeGridGLQC
+const MakeGridGLQC = MakeGridGLQ
 
 export GLQGridCoord!
 function GLQGridCoord!(latglq::AbstractVector{Cdouble},
@@ -866,11 +878,10 @@ function MakeGridPoint(cilm::AbstractArray{Cdouble,3}, lmax::Integer,
     return Float64(value)
 end
 
-export MakeGridPointC
-function MakeGridPointC(cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer,
-                        lat::Union{AbstractFloat,Integer},
-                        lon::Union{AbstractFloat,Integer}; norm::Integer=1,
-                        csphase::Integer=1, dealloc::Bool=false)
+function MakeGridPoint(cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer,
+                       lat::Union{AbstractFloat,Integer},
+                       lon::Union{AbstractFloat,Integer}; norm::Integer=1,
+                       csphase::Integer=1, dealloc::Bool=false)
     @assert lmax ≥ 0
     @assert size(cilm, 1) == 2
     @assert size(cilm, 2) ≥ lmax + 1
@@ -883,6 +894,9 @@ function MakeGridPointC(cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer,
                   lat, lon, norm, csphase, dealloc)
     return Complex{Float64}(value)
 end
+
+export MakeGridPointC
+const MakeGridPointC = MakeGridPoint
 
 export SHMultiply!
 function SHMultiply!(cilmout::AbstractArray{Cdouble,3},
