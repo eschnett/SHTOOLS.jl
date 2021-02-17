@@ -245,9 +245,10 @@ end
 # Spherical harmonic transforms
 
 export SHExpandDH!
-function SHExpandDH!(cilm::Array{Cdouble,3}, lmax::Optional{Ref{<:Integer}},
-                     griddh::Array{Cdouble,2}, n::Integer; norm::Integer=1,
-                     sampling::Integer=1, csphase::Integer=1,
+function SHExpandDH!(cilm::AbstractArray{Cdouble,3},
+                     lmax::Optional{Ref{<:Integer}},
+                     griddh::AbstractArray{Cdouble,2}, n::Integer;
+                     norm::Integer=1, sampling::Integer=1, csphase::Integer=1,
                      lmax_calc::Optional{Integer}=nothing,
                      exitstatus::Optional{Ref{<:Integer}}=nothing)
     @assert n > 0 && iseven(n)
@@ -280,8 +281,8 @@ function SHExpandDH!(cilm::Array{Cdouble,3}, lmax::Optional{Ref{<:Integer}},
 end
 
 export SHExpandDH
-function SHExpandDH(griddh::Array{Cdouble,2}, n::Integer; norm::Integer=1,
-                    sampling::Integer=1, csphase::Integer=1,
+function SHExpandDH(griddh::AbstractArray{Cdouble,2}, n::Integer;
+                    norm::Integer=1, sampling::Integer=1, csphase::Integer=1,
                     lmax_calc::Optional{Integer}=nothing,
                     exitstatus::Optional{Ref{<:Integer}}=nothing)
     @assert n > 0 && iseven(n)
@@ -294,9 +295,10 @@ function SHExpandDH(griddh::Array{Cdouble,2}, n::Integer; norm::Integer=1,
 end
 
 export MakeGridDH!
-function MakeGridDH!(griddh::Array{Cdouble,2}, n::Optional{Ref{<:Integer}},
-                     cilm::Array{Cdouble,3}, lmax::Integer; norm::Integer=1,
-                     sampling::Integer=1, csphase::Integer=1,
+function MakeGridDH!(griddh::AbstractArray{Cdouble,2},
+                     n::Optional{Ref{<:Integer}},
+                     cilm::AbstractArray{Cdouble,3}, lmax::Integer;
+                     norm::Integer=1, sampling::Integer=1, csphase::Integer=1,
                      lmax_calc::Optional{Integer}=nothing, extend::Integer=0,
                      exitstatus::Optional{Ref{<:Integer}}=nothing)
     @assert lmax ≥ 0
@@ -329,8 +331,8 @@ function MakeGridDH!(griddh::Array{Cdouble,2}, n::Optional{Ref{<:Integer}},
 end
 
 export MakeGridDH
-function MakeGridDH(cilm::Array{Cdouble,3}, lmax::Integer; norm::Integer=1,
-                    sampling::Integer=1, csphase::Integer=1,
+function MakeGridDH(cilm::AbstractArray{Cdouble,3}, lmax::Integer;
+                    norm::Integer=1, sampling::Integer=1, csphase::Integer=1,
                     lmax_calc::Optional{Integer}=nothing, extend::Integer=0,
                     exitstatus::Optional{Ref{<:Integer}}=nothing)
     @assert lmax ≥ 0
@@ -345,9 +347,9 @@ function MakeGridDH(cilm::Array{Cdouble,3}, lmax::Integer; norm::Integer=1,
 end
 
 export SHExpandDHC!
-function SHExpandDHC!(cilm::Array{Complex{Cdouble},3},
+function SHExpandDHC!(cilm::AbstractArray{Complex{Cdouble},3},
                       lmax::Optional{Ref{<:Integer}},
-                      griddh::Array{Complex{Cdouble},2}, n::Integer;
+                      griddh::AbstractArray{Complex{Cdouble},2}, n::Integer;
                       norm::Integer=1, sampling::Integer=1, csphase::Integer=1,
                       lmax_calc::Optional{Integer}=nothing,
                       exitstatus::Optional{Ref{<:Integer}}=nothing)
@@ -381,7 +383,7 @@ function SHExpandDHC!(cilm::Array{Complex{Cdouble},3},
 end
 
 export SHExpandDHC
-function SHExpandDHC(griddh::Array{Complex{Cdouble},2}, n::Integer;
+function SHExpandDHC(griddh::AbstractArray{Complex{Cdouble},2}, n::Integer;
                      norm::Integer=1, sampling::Integer=1, csphase::Integer=1,
                      lmax_calc::Optional{Integer}=nothing,
                      exitstatus::Optional{Ref{<:Integer}}=nothing)
@@ -395,9 +397,9 @@ function SHExpandDHC(griddh::Array{Complex{Cdouble},2}, n::Integer;
 end
 
 export MakeGridDHC!
-function MakeGridDHC!(griddh::Array{Complex{Cdouble},2},
+function MakeGridDHC!(griddh::AbstractArray{Complex{Cdouble},2},
                       n::Optional{Ref{<:Integer}},
-                      cilm::Array{Complex{Cdouble},3}, lmax::Integer;
+                      cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer;
                       norm::Integer=1, sampling::Integer=1, csphase::Integer=1,
                       lmax_calc::Optional{Integer}=nothing, extend::Integer=0,
                       exitstatus::Optional{Ref{<:Integer}}=nothing)
@@ -432,7 +434,7 @@ function MakeGridDHC!(griddh::Array{Complex{Cdouble},2},
 end
 
 export MakeGridDHC
-function MakeGridDHC(cilm::Array{Complex{Cdouble},3}, lmax::Integer;
+function MakeGridDHC(cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer;
                      norm::Integer=1, sampling::Integer=1, csphase::Integer=1,
                      lmax_calc::Optional{Integer}=nothing, extend::Integer=0,
                      exitstatus::Optional{Ref{<:Integer}}=nothing)
