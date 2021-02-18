@@ -58,7 +58,7 @@ for op in [:PlmBar, :PlmON, :PlmSchmidt]
         export $op_d1!
         function $op_d1!(p::AbstractVector{Cdouble},
                          dp::AbstractVector{Cdouble}, lmax::Integer,
-                         z::Union{AbstractVector,Integer}; csphase::Integer=1,
+                         z::Union{AbstractFloat,Integer}; csphase::Integer=1,
                          cnorm::Integer=0,
                          exitstatus::Optional{Ref{<:Integer}}=nothing)
             @assert lmax ≥ 0
@@ -134,7 +134,7 @@ for op in [:PLegendreA]
         export $op_d1!
         function $op_d1!(p::AbstractVector{Cdouble},
                          dp::AbstractVector{Cdouble}, lmax::Integer,
-                         z::Union{AbstractVector,Integer}; csphase::Integer=1,
+                         z::Union{AbstractFloat,Integer}; csphase::Integer=1,
                          exitstatus::Optional{Ref{<:Integer}}=nothing)
             @assert lmax ≥ 0
             @assert csphase ∈ (1, -1)
