@@ -444,7 +444,55 @@ const MakeGridDHC! = MakeGridDH!
 export MakeGridDHC
 const MakeGridDHC = MakeGridDH
 
-# TODO: Add MakeGradientDH once there is a C wrapper
+export MakeGradientDH!
+function MakeGradientDH!(theta::AbstractArray{Cdouble,2},
+                         phi::AbstractArray{Cdouble,2},
+                         cilm::AbstractArray{Cdouble,3}, lmax::Integer;
+                         sampling::Integer=1,
+                         lmax_calc::Optional{Integer}=nothing,
+                         extend::Integer=0,
+                         exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert lmax ≥ 0
+    @assert sampling ∈ (1, 2)
+    @assert extend ∈ (0, 1)
+    n′ = Int(2 * lmax + 2)
+    @assert size(theta, 1) ≥ n′ + extend
+    @assert size(theta, 2) ≥ sampling * n′ + extend
+    @assert size(phi) == size(theta)
+    @assert size(cilm, 1) == 2
+    @assert size(cilm, 2) ≥ lmax + 1
+    @assert size(cilm, 3) == size(cilm, 2)
+    lmax_calc′ = optional(lmax_calc, lmax)
+    exitstatus′ = Ref{Cint}()
+    ccall((:MakeGradientDH, libSHTOOLS), Cvoid,
+          (Ptr{Cdouble}, Cint, Cint, Ptr{Cdouble}, Ptr{Cdouble}, Cint, Cint,
+           Ref{Cint}, Ref{Cint}, Ref{Cint}, Ref{Cint}, Ref{Cint}), cilm,
+          size(cilm, 2), lmax, theta, phi, size(theta, 1), size(theta, 2), n′,
+          sampling, lmax_calc′, extend, exitstatus′)
+    if exitstatus === nothing
+        exitstatus′[] ≠ 0 &&
+            error("MakeGradientDH!: Error code $(exitstatus′[])")
+    else
+        exitstatus[] = exitstatus′[]
+    end
+    return theta, phi, n′
+end
+
+export MakeGradientDH
+function MakeGradientDH(cilm::AbstractArray{Cdouble,3}, lmax::Integer;
+                        sampling::Integer=1,
+                        lmax_calc::Optional{Integer}=nothing, extend::Integer=0,
+                        exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert lmax ≥ 0
+    @assert sampling ∈ (1, 2)
+    @assert extend ∈ (0, 1)
+    n′ = Int(2 * lmax + 2)
+    theta = Array{Cdouble}(undef, n′ + extend, sampling * n′ + extend)
+    phi = Array{Cdouble}(undef, n′ + extend, sampling * n′ + extend)
+    MakeGradientDH!(theta, phi, cilm, lmax; sampling=sampling,
+                    lmax_calc=lmax_calc, extend=extend, exitstatus=exitstatus)
+    return theta, phi
+end
 
 export SHGLQ!
 function SHGLQ!(zero::AbstractVector{Cdouble}, w::AbstractVector{Cdouble},

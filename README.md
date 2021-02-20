@@ -47,6 +47,7 @@ SHExpandDH
 MakeGridDH
 SHExpandDHC
 MakeGridDHC
+MakeGradientDH
 
 SHGLQ
 SHExpandGLQ

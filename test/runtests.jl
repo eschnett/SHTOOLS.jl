@@ -111,7 +111,7 @@ end
 
 # Spherical harmonic transforms
 
-@testset "MakeGridDH and SHExpandDH" begin
+@testset "MakeGridDH, MakeGradientDH, and SHExpandDH" begin
     # Invent a random grid
     Random.seed!(0)
     n = 10
@@ -124,6 +124,10 @@ end
     # Go back to the grid (it will be low-pass filtered)
     griddh′, n′ = MakeGridDH(cilm, lmax)
     @test n′ == n
+
+    # Calculate derivatives
+    theta, phi = MakeGradientDH(cilm, lmax)
+    @test size(theta) == size(phi)
 
     # Go back to coefficients again (they must be the same)
     cilm′, lmax′ = SHExpandDH(griddh, n)
