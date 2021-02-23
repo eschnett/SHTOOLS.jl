@@ -8,5 +8,5 @@ using SHTOOLS
 
 makedocs(; sitename="SHTOOLS", format=Documenter.HTML(), modules=[SHTOOLS])
 
-deploydocs(; repo="github.com/eschnett/JuliaFormatter.jl.git", devbranch="main",
+deploydocs(; repo="github.com/eschnett/SHTOOLS.jl.git", devbranch="main",
            push_preview=true)
