@@ -9,8 +9,8 @@
                              norm::Integer=1,
                              sampling::Integer=1,
                              csphase::Integer=1,
-                             lmax_calc::Optional{Integer}=nothing,
-                             exitstatus::Optional{Ref{<:Integer}}=nothing)
+                             lmax_calc::Union{Nothing,Integer}=nothing,
+                             exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
     cilm::AbstractArray{Cdouble,3}
     lmax:Int
 
@@ -20,14 +20,14 @@
                              norm::Integer=1,
                              sampling::Integer=1,
                              csphase::Integer=1,
-                             lmax_calc::Optional{Integer}=nothing,
-                             exitstatus::Optional{Ref{<:Integer}}=nothing)
+                             lmax_calc::Union{Nothing,Integer}=nothing,
+                             exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
     cilm::AbstractArray{Complex{Cdouble},3}
     lmax:Int
 
-Expand an equally sampled or equally spaced map into real or complex
-spherical harmonics using Driscoll and Healy’s (1994) sampling
-theorem.
+Expand an equally sampled or equally spaced real or complex map into
+real or complex spherical harmonics using Driscoll and Healy’s (1994)
+sampling theorem.
 
 See also: [`SHExpandDH`](@ref), [`MakeGridDH!`](@ref),
 [`MakeGradientDH!`](@ref)
@@ -72,8 +72,8 @@ end
                             norm::Integer=1,
                             sampling::Integer=1,
                             csphase::Integer=1,
-                            lmax_calc::Optional{Integer}=nothing,
-                            exitstatus::Optional{Ref{<:Integer}}=nothing)
+                            lmax_calc::Union{Nothing,Integer}=nothing,
+                            exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
     cilm::Array{Cdouble,3}
     lmax:Int
 
@@ -82,14 +82,14 @@ end
                             norm::Integer=1,
                             sampling::Integer=1,
                             csphase::Integer=1,
-                            lmax_calc::Optional{Integer}=nothing,
-                            exitstatus::Optional{Ref{<:Integer}}=nothing)
+                            lmax_calc::Union{Nothing,Integer}=nothing,
+                            exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
     cilm::Array{Complex{Cdouble},3}
     lmax:Int
 
-Expand an equally sampled or equally spaced map into real or complex
-spherical harmonics using Driscoll and Healy’s (1994) sampling
-theorem.
+Expand an equally sampled or equally spaced real or complex map into
+real or complex spherical harmonics using Driscoll and Healy’s (1994)
+sampling theorem.
 
 See also: [`SHExpandDH!`](@ref), [`MakeGridDH`](@ref),
 [`MakeGradientDH`](@ref)
@@ -117,9 +117,9 @@ end
                 norm::Integer=1,
                 sampling::Integer=1,
                 csphase::Integer=1,
-                lmax_calc::Optional{Integer}=nothing,
+                lmax_calc::Union{Nothing,Integer}=nothing,
                 extend::Integer=0,
-                exitstatus::Optional{Ref{<:Integer}}=nothing)
+                exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
     griddh::AbstractArray{Cdouble,2}
     n::Int
 
@@ -129,15 +129,15 @@ end
                 norm::Integer=1,
                 sampling::Integer=1,
                 csphase::Integer=1,
-                lmax_calc::Optional{Integer}=nothing,
+                lmax_calc::Union{Nothing,Integer}=nothing,
                 extend::Integer=0,
-                exitstatus::Optional{Ref{<:Integer}}=nothing)
+                exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
     griddh::AbstractArray{Complex{Cdouble},2}
     n::Int
 
-Create a 2D map from a set of real or complex spherical harmonic
-coefficients that conforms with Driscoll and Healy’s (1994) sampling
-theorem.
+Create a real or complex 2D map from a set of real or complex
+spherical harmonic coefficients that conforms with Driscoll and
+Healy’s (1994) sampling theorem.
 
 See also: [`SHExpandDH!`](@ref), [`MakeGridDH`](@ref),
 [`MakeGradientDH!`](@ref)
@@ -182,9 +182,9 @@ end
                norm::Integer=1,
                sampling::Integer=1,
                csphase::Integer=1,
-               lmax_calc::Optional{Integer}=nothing,
+               lmax_calc::Union{Nothing,Integer}=nothing,
                extend::Integer=0,
-               exitstatus::Optional{Ref{<:Integer}}=nothing)
+               exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
     griddh::Array{Cdouble,2}
     n::Int
 
@@ -193,15 +193,15 @@ end
                norm::Integer=1,
                sampling::Integer=1,
                csphase::Integer=1,
-               lmax_calc::Optional{Integer}=nothing,
+               lmax_calc::Union{Nothing,Integer}=nothing,
                extend::Integer=0,
-               exitstatus::Optional{Ref{<:Integer}}=nothing)
+               exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
     griddh::Array{Complex{Cdouble},2}
     n::Int
 
-Create a 2D map from a set of real or complex spherical harmonic
-coefficients that conforms with Driscoll and Healy’s (1994) sampling
-theorem.
+Create a real or complex 2D map from a set of real or complex
+spherical harmonic coefficients that conforms with Driscoll and
+Healy’s (1994) sampling theorem.
 
 See also: [`SHExpandDH`](@ref), [`MakeGridDH!`](@ref),
 [`MakeGradientDH`](@ref)
@@ -355,9 +355,9 @@ export MakeGradientDH!
                     norm::Integer=1,
                     sampling::Integer=1,
                     csphase::Integer=1,
-                    lmax_calc::Optional{Integer}=nothing,
+                    lmax_calc::Union{Nothing,Integer}=nothing,
                     extend::Integer=0,
-                    exitstatus::Optional{Ref{<:Integer}}=nothing)
+                    exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
     theta::AbstractArray{Cdouble,2}
     phi::AbstractArray{Cdouble,2}
     n::Int
@@ -409,9 +409,9 @@ export MakeGradientDH
                    norm::Integer=1,
                    sampling::Integer=1,
                    csphase::Integer=1,
-                   lmax_calc::Optional{Integer}=nothing,
+                   lmax_calc::Union{Nothing,Integer}=nothing,
                    extend::Integer=0,
-                   exitstatus::Optional{Ref{<:Integer}}=nothing)
+                   exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
     theta::Array{Cdouble,2}
     phi::Array{Cdouble,2}
     n::Int
@@ -439,6 +439,24 @@ function MakeGradientDH(cilm::AbstractArray{Cdouble,3}, lmax::Integer;
 end
 
 export SHGLQ!
+"""
+    zero, w = SHGLQ!(zero::AbstractVector{Cdouble},
+                     w::AbstractVector{Cdouble},
+                     plx::Union{Nothing,AbstractArray{Cdouble,2}},
+                     lmax::Integer;
+                     norm::Integer=1,
+                     csphase::Integer=1,
+                     cnorm::Integer=0,
+                     exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+    zero::AbstractVector{Cdouble}
+    w::AbstractVector{Cdouble}
+
+Precompute weights, nodes, and associated Legendre functions used in
+the GLQ-based spherical harmonics routines.
+
+See also: [`SHGLQ`](@ref), [`SHExpandGLQ!`](@ref),
+[`MakeGridGLQ!`](@ref), [`GLQGridCoord!`](@ref)
+"""
 function SHGLQ!(zero::AbstractVector{Cdouble}, w::AbstractVector{Cdouble},
                 plx::Optional{AbstractArray{Cdouble,2}}, lmax::Integer;
                 norm::Integer=1, csphase::Integer=1, cnorm::Integer=0,
@@ -468,6 +486,22 @@ end
 # Gauss-Legendre quadrature grids
 
 export SHGLQ
+"""
+    zero, w = SHGLQ(plx::Union{Nothing,AbstractArray{Cdouble,2}},
+                    lmax::Integer;
+                    norm::Integer=1,
+                    csphase::Integer=1,
+                    cnorm::Integer=0,
+                    exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+    zero::Vector{Cdouble}
+    w::Vector{Cdouble}
+
+Precompute weights, nodes, and associated Legendre functions used in
+the GLQ-based spherical harmonics routines.
+
+See also: [`SHGLQ!`](@ref), [`SHExpandGLQ`](@ref),
+[`MakeGridGLQ`](@ref), [`GLQGridCoord`](@ref)
+"""
 function SHGLQ(plx::Optional{AbstractArray{Cdouble,2}}, lmax::Integer;
                norm::Integer=1, csphase::Integer=1, cnorm::Integer=0,
                exitstatus::Optional{Ref{<:Integer}}=nothing)
@@ -481,6 +515,39 @@ function SHGLQ(plx::Optional{AbstractArray{Cdouble,2}}, lmax::Integer;
            exitstatus=exitstatus)
     return zero, w
 end
+
+"""
+    cilm = SHExpandGLQ!(cilm::AbstractArray{Cdouble,3},
+                        lmax::Integer,
+                        gridglq::AbstractArray{Cdouble,2},
+                        w::AbstractVector{Cdouble},
+                        plx::Union{Nothing,AbstractArray{Cdouble,2}},
+                        zero::Union{Nothing,AbstractVector{Cdouble}};
+                        norm::Integer=1,
+                        csphase::Integer=1,
+                        lmax_calc::Union{Nothing,Integer}=nothing,
+                        exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+    cilm::AbstractArray{Cdouble,3},
+
+    cilm = SHExpandGLQ!(cilm::AbstractArray{Complex{Cdouble},3},
+                        lmax::Integer,
+                        gridglq::AbstractArray{Complex{Cdouble},2},
+                        w::AbstractVector{Cdouble},
+                        plx::Union{Nothing,AbstractArray{Cdouble,2}},
+                        zero::Union{Nothing,AbstractVector{Cdouble}};
+                        norm::Integer=1,
+                        csphase::Integer=1,
+                        lmax_calc::Union{Nothing,Integer}=nothing,
+                        exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+    cilm::AbstractArray{Complex{Cdouble},3},
+
+Expand a 2D real or complex map sampled on the Gauss-Legendre
+quadrature nodes into real or complex spherical harmonics.
+
+See also: [`SHExpandGLQ`](@ref), [`SHGLQ!`](@ref),
+[`MakeGridGLQ!`](@ref), [`GLQGridCoord!`](@ref)
+"""
+function SHExpandGLQ! end
 
 export SHExpandGLQ!
 function SHExpandGLQ!(cilm::AbstractArray{Cdouble,3}, lmax::Integer,
@@ -522,6 +589,37 @@ function SHExpandGLQ!(cilm::AbstractArray{Cdouble,3}, lmax::Integer,
     return cilm
 end
 
+"""
+    cilm = SHExpandGLQ(lmax::Integer,
+                       gridglq::AbstractArray{Cdouble,2},
+                       w::AbstractVector{Cdouble},
+                       plx::Union{Nothing,AbstractArray{Cdouble,2}},
+                       zero::Union{Nothing,AbstractVector{Cdouble}};
+                       norm::Integer=1,
+                       csphase::Integer=1,
+                       lmax_calc::Union{Nothing,Integer}=nothing,
+                       exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+    cilm::Array{Cdouble,3},
+
+    cilm = SHExpandGLQ(lmax::Integer,
+                       gridglq::AbstractArray{Complex{Cdouble},2},
+                       w::AbstractVector{Cdouble},
+                       plx::Union{Nothing,AbstractArray{Cdouble,2}},
+                       zero::Union{Nothing,AbstractVector{Cdouble}};
+                       norm::Integer=1,
+                       csphase::Integer=1,
+                       lmax_calc::Union{Nothing,Integer}=nothing,
+                       exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+    cilm::Array{Complex{Cdouble},3},
+
+Expand a 2D real or complex map sampled on the Gauss-Legendre
+quadrature nodes into real or complex spherical harmonics.
+
+See also: [`SHExpandGLQ!`](@ref), [`SHGLQ`](@ref),
+[`MakeGridGLQ`](@ref), [`GLQGridCoord`](@ref)
+"""
+function SHExpandGLQ end
+
 export SHExpandGLQ
 function SHExpandGLQ(lmax::Integer, gridglq::AbstractArray{Cdouble,2},
                      w::AbstractVector{Cdouble},
@@ -537,6 +635,40 @@ function SHExpandGLQ(lmax::Integer, gridglq::AbstractArray{Cdouble,2},
                  lmax_calc=lmax_calc, exitstatus=exitstatus)
     return cilm
 end
+
+"""
+    gridglq = MakeGridGLQ!(gridglq::AbstractArray{Cdouble,2},
+                           cilm::AbstractArray{Cdouble,3},
+                           lmax::Integer,
+                           plx::Union{Nothing,AbstractArray{Cdouble,2}},
+                           zero::Union{Nothing,AbstractVector{Cdouble}};
+                           norm::Integer=1,
+                           csphase::Integer=1,
+                           lmax_calc::Union{Nothing,Integer}=nothing,
+                           extend::Integer=0,
+                           exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+    gridqlq::AbstractArray{Cdouble,2}
+
+    gridglq = MakeGridGLQ!(gridglq::AbstractArray{Complex{Cdouble},2},
+                           cilm::AbstractArray{Complex{Cdouble},3},
+                           lmax::Integer,
+                           plx::Union{Nothing,AbstractArray{Cdouble,2}},
+                           zero::Union{Nothing,AbstractVector{Cdouble}};
+                           norm::Integer=1,
+                           csphase::Integer=1,
+                           lmax_calc::Union{Nothing,Integer}=nothing,
+                           extend::Integer=0,
+                           exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+    gridqlq::AbstractArray{Complex{Cdouble},2}
+
+Create a 2D real or complex map from a set of real or complex
+spherical harmonic coefficients sampled on a the Gauss-Legendre
+quadrature nodes.
+
+See also: [`MakeGridGLQ`](@ref), [`SHGLQ!`](@ref),
+[`SHExpandGLQ!`](@ref), [`GLQGridCoord!`](@ref)
+"""
+function MakeGridGLQ! end
 
 export MakeGridGLQ!
 function MakeGridGLQ!(gridglq::AbstractArray{Cdouble,2},
@@ -576,6 +708,38 @@ function MakeGridGLQ!(gridglq::AbstractArray{Cdouble,2},
     end
     return gridglq
 end
+
+"""
+    gridglq = MakeGridGLQ(cilm::AbstractArray{Cdouble,3},
+                          lmax::Integer,
+                          plx::Union{Nothing,AbstractArray{Cdouble,2}},
+                          zero::Union{Nothing,AbstractVector{Cdouble}};
+                          norm::Integer=1,
+                          csphase::Integer=1,
+                          lmax_calc::Union{Nothing,Integer}=nothing,
+                          extend::Integer=0,
+                          exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+    gridqlq::Array{Cdouble,2}
+
+    gridglq = MakeGridGLQ(cilm::AbstractArray{Complex{Cdouble},3},
+                          lmax::Integer,
+                          plx::Union{Nothing,AbstractArray{Cdouble,2}},
+                          zero::Union{Nothing,AbstractVector{Cdouble}};
+                          norm::Integer=1,
+                          csphase::Integer=1,
+                          lmax_calc::Union{Nothing,Integer}=nothing,
+                          extend::Integer=0,
+                          exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+    gridqlq::Array{Complex{Cdouble},2}
+
+Create a 2D real or complex map from a set of real or complex
+spherical harmonic coefficients sampled on a the Gauss-Legendre
+quadrature nodes.
+
+See also: [`MakeGridGLQ!`](@ref), [`SHGLQ`](@ref),
+[`SHExpandGLQ`](@ref), [`GLQGridCoord`](@ref)
+"""
+function MakeGridGLQ end
 
 export MakeGridGLQ
 function MakeGridGLQ(cilm::AbstractArray{Cdouble,3}, lmax::Integer,
@@ -647,8 +811,18 @@ function SHExpandGLQ(lmax::Integer, gridglq::AbstractArray{Complex{Cdouble},2},
 end
 
 export SHExpandGLQC!
+"""
+    SHExpandGLQC!(...)
+
+Alias for [`SHExpandGLQ!`](@ref)
+"""
 const SHExpandGLQC! = SHExpandGLQ!
 export SHExpandGLQC
+"""
+    SHExpandGLQC(...)
+
+Alias for [`SHExpandGLQ`](@ref)
+"""
 const SHExpandGLQC = SHExpandGLQ
 
 function MakeGridGLQ!(gridglq::AbstractArray{Complex{Cdouble},2},
@@ -705,11 +879,39 @@ function MakeGridGLQ(cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer,
 end
 
 export MakeGridGLQC!
+"""
+    MakeGridGLQC!(...)
+
+Alias for [`SHExpandGLQ!`](@ref)
+"""
 const MakeGridGLQC! = MakeGridGLQ!
 export MakeGridGLQC
+"""
+    MakeGridGLQC(...)
+
+Alias for [`SHExpandGLQ`](@ref)
+"""
 const MakeGridGLQC = MakeGridGLQ
 
 export GLQGridCoord!
+"""
+    latglq, longlq, nlat, nlong =
+        GLQGridCoord!(latglq::AbstractVector{Cdouble},
+                      longlq::AbstractVector{Cdouble},
+                      lmax::Integer;
+                      extend::Integer=0,
+                      exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+    latglq::AbstractVector{Cdouble},
+    longlq::AbstractVector{Cdouble},
+    nlat::Int
+    nlong::Int
+
+Compute the latitude and longitude coordinates used in Gauss-Legendre
+quadrature grids.
+
+See also: [`GLQGridCoord`](@ref), [`SHExpandGLQ!`](@ref),
+[`MakeGridGLQ!`](@ref)
+"""
 function GLQGridCoord!(latglq::AbstractVector{Cdouble},
                        longlq::AbstractVector{Cdouble}, lmax::Integer;
                        extend::Integer=0,
@@ -734,6 +936,22 @@ function GLQGridCoord!(latglq::AbstractVector{Cdouble},
 end
 
 export GLQGridCoord
+"""
+    latglq, longlq, nlat, nlong =
+        GLQGridCoord(lmax::Integer;
+                     extend::Integer=0,
+                     exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+    latglq::Vector{Cdouble},
+    longlq::Vector{Cdouble},
+    nlat::Int
+    nlong::Int
+
+Compute the latitude and longitude coordinates used in Gauss-Legendre
+quadrature grids.
+
+See also: [`GLQGridCoord!`](@ref), [`SHExpandGLQ`](@ref),
+[`MakeGridGLQ`](@ref)
+"""
 function GLQGridCoord(lmax::Integer; extend::Integer=0,
                       exitstatus::Optional{Ref{<:Integer}}=nothing)
     @assert lmax ≥ 0
@@ -747,6 +965,26 @@ end
 # Other routines
 
 export SHExpandLSQ!
+"""
+    cilm, chi = SHExpandLSQ!(cilm::AbstractArray{Cdouble,3},
+                             d::AbstractVector{Cdouble},
+                             lat::AbstractVector{Cdouble},
+                             lon::AbstractVector{Cdouble},
+                             nmax::Integer,
+                             lmax::Integer;
+                             norm::Integer=1,
+                             csphase::Integer=1,
+                             weights::Vector{Cdouble},
+                             exitstatus::Optional{Ref{<:Integer}}=nothing)
+    cilm::AbstractArray{Cdouble,3},
+    chi::Float64
+
+Expand a set of irregularly sampled data points into spherical
+harmonics using a (weighted) least squares inversion.
+
+See also: [`SHExpandLSQ`](@ref), [`MakeGridPoint`](@ref),
+[`SHExpandDH!`](@ref), [`SHExpandGLQ!`](@ref)
+"""
 function SHExpandLSQ!(cilm::AbstractArray{Cdouble,3},
                       d::AbstractVector{Cdouble}, lat::AbstractVector{Cdouble},
                       lon::AbstractVector{Cdouble}, nmax::Integer,
@@ -776,10 +1014,29 @@ function SHExpandLSQ!(cilm::AbstractArray{Cdouble,3},
     else
         exitstatus[] = exitstatus′[]
     end
-    return cilm, Cdouble(chi2′[])
+    return cilm, Float64(chi2′[])
 end
 
 export SHExpandLSQ
+"""
+    cilm, chi = SHExpandLSQ(d::AbstractVector{Cdouble},
+                            lat::AbstractVector{Cdouble},
+                            lon::AbstractVector{Cdouble},
+                            nmax::Integer,
+                            lmax::Integer;
+                            norm::Integer=1,
+                            csphase::Integer=1,
+                            weights::Vector{Cdouble},
+                            exitstatus::Optional{Ref{<:Integer}}=nothing)
+    cilm::Array{Cdouble,3},
+    chi::Cdouble
+
+Expand a set of irregularly sampled data points into spherical
+harmonics using a (weighted) least squares inversion.
+
+See also: [`SHExpandLSQ!`](@ref), [`MakeGridPoint`](@ref),
+[`SHExpandDH`](@ref), [`SHExpandGLQ`](@ref)
+"""
 function SHExpandLSQ(d::AbstractVector{Cdouble}, lat::AbstractVector{Cdouble},
                      lon::AbstractVector{Cdouble}, nmax::Integer, lmax::Integer;
                      norm::Integer=1, csphase::Integer=1,
@@ -794,6 +1051,31 @@ function SHExpandLSQ(d::AbstractVector{Cdouble}, lat::AbstractVector{Cdouble},
 end
 
 export MakeGrid2d!
+"""
+    grid, nlat, nlong =
+        MakeGrid2d!(grid::AbstractArray{Cdouble,2},
+                    cilm::AbstractArray{Cdouble,3},
+                    lmax::Integer,
+                    interval::Union{AbstractFloat,Integer};
+                    norm::Integer=1,
+                    csphase::Integer=1,
+                    f::Optional{Union{AbstractFloat,Integer}}=nothing,
+                    a::Optional{Union{AbstractFloat,Integer}}=nothing,
+                    north::Union{AbstractFloat,Integer}=90.0,
+                    south::Union{AbstractFloat,Integer}=-90.0,
+                    east::Union{AbstractFloat,Integer}=360.0,
+                    west::Union{AbstractFloat,Integer}=0.0,
+                    dealloc::Bool=false,
+                    exitstatus::Optional{Ref{<:Integer}}=nothing)
+    grid::AbstractArray{Cdouble,2}
+    nlat::Int
+    nlong::Int
+
+Create a 2D cylindrical map with arbitrary grid spacing from a set of
+spherical harmonic coefficients.
+
+See also: [`MakeGrid2d`](@ref), [`MakeGridPoint`](@ref)
+"""
 function MakeGrid2d!(grid::AbstractArray{Cdouble,2},
                      cilm::AbstractArray{Cdouble,3}, lmax::Integer,
                      interval::Union{AbstractFloat,Integer}; norm::Integer=1,
@@ -834,6 +1116,30 @@ function MakeGrid2d!(grid::AbstractArray{Cdouble,2},
 end
 
 export MakeGrid2d
+"""
+    grid, nlat, nlong =
+        MakeGrid2d(cilm::AbstractArray{Cdouble,3},
+                   lmax::Integer,
+                   interval::Union{AbstractFloat,Integer};
+                   norm::Integer=1,
+                   csphase::Integer=1,
+                   f::Optional{Union{AbstractFloat,Integer}}=nothing,
+                   a::Optional{Union{AbstractFloat,Integer}}=nothing,
+                   north::Union{AbstractFloat,Integer}=90.0,
+                   south::Union{AbstractFloat,Integer}=-90.0,
+                   east::Union{AbstractFloat,Integer}=360.0,
+                   west::Union{AbstractFloat,Integer}=0.0,
+                   dealloc::Bool=false,
+                   exitstatus::Optional{Ref{<:Integer}}=nothing)
+    grid::Array{Cdouble,2}
+    nlat::Int
+    nlong::Int
+
+Create a 2D cylindrical map with arbitrary grid spacing from a set of
+spherical harmonic coefficients.
+
+See also: [`MakeGrid2d!`](@ref), [`MakeGridPoint`](@ref)
+"""
 function MakeGrid2d(cilm::AbstractArray{Cdouble,3}, lmax::Integer,
                     interval::Union{AbstractFloat,Integer}; norm::Integer=1,
                     csphase::Integer=1,
@@ -852,6 +1158,33 @@ function MakeGrid2d(cilm::AbstractArray{Cdouble,3}, lmax::Integer,
                 dealloc=dealloc, exitstatus=exitstatus)
     return grid
 end
+
+"""
+    value = MakeGridPoint(cilm::AbstractArray{Cdouble,3},
+                          lmax::Integer,
+                          lat::Union{AbstractFloat,Integer},
+                          long::Union{AbstractFloat,Integer};
+                          norm::Integer=1,
+                          csphase::Integer=1,
+                          dealloc::Bool=false)
+    value::Float64
+
+    value = MakeGridPoint(cilm::AbstractArray{Complex{Cdouble},3},
+                          lmax::Integer,
+                          lat::Union{AbstractFloat,Integer},
+                          long::Union{AbstractFloat,Integer};
+                          norm::Integer=1,
+                          csphase::Integer=1,
+                          dealloc::Bool=false)
+    value::Complex{Float64}
+
+Evaluate a real or complex function expressed in real or complex
+spherical harmonics at a single point.
+
+See also: [`SHExpandLSQ!`](@ref), [`SHExpandLSQ`](@ref),
+[`MakeGrid2d!`](@ref), [`MakeGrid2d`](@ref)
+"""
+function MakeGridPoint end
 
 export MakeGridPoint
 function MakeGridPoint(cilm::AbstractArray{Cdouble,3}, lmax::Integer,
@@ -889,9 +1222,32 @@ function MakeGridPoint(cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer,
 end
 
 export MakeGridPointC
+"""
+   MakeGridPointC(...)
+
+Alias for [`MakeGridPoint`](@ref).
+"""
 const MakeGridPointC = MakeGridPoint
 
 export SHMultiply!
+"""
+    cilmout = SHMultiply!(cilmout::AbstractArray{Cdouble,3},
+                          cilm1::AbstractArray{Cdouble,3},
+                          lmax1::Integer,
+                          cilm2::AbstractArray{Cdouble,3},
+                          lmax2::Integer;
+                          precomp::Bool=false,
+                          norm::Integer=1,
+                          csphase::Integer=1,
+                          exitstatus::Optional{Ref{<:Integer}}=nothing)
+    cilmout::AbstractArray{Cdouble,3}
+
+Multiply two functions and determine the spherical harmonic
+coefficients of the resulting function.
+
+See also: [`SHMultiply`](@ref), [`SHExpandDH!`](@ref),
+[`SHExpandGLQ!`](@ref), [`SHExpandLSQ!`](@ref)
+"""
 function SHMultiply!(cilmout::AbstractArray{Cdouble,3},
                      cilm1::AbstractArray{Cdouble,3}, lmax1::Integer,
                      cilm2::AbstractArray{Cdouble,3}, lmax2::Integer;
@@ -925,6 +1281,23 @@ function SHMultiply!(cilmout::AbstractArray{Cdouble,3},
 end
 
 export SHMultiply
+"""
+    cilmout = SHMultiply(cilm1::AbstractArray{Cdouble,3},
+                         lmax1::Integer,
+                         cilm2::AbstractArray{Cdouble,3},
+                         lmax2::Integer;
+                         precomp::Bool=false,
+                         norm::Integer=1,
+                         csphase::Integer=1,
+                         exitstatus::Optional{Ref{<:Integer}}=nothing)
+    cilmout::Array{Cdouble,3}
+
+Multiply two functions and determine the spherical harmonic
+coefficients of the resulting function.
+
+See also: [`SHMultiply!`](@ref), [`SHExpandDH`](@ref),
+[`SHExpandGLQ`](@ref), [`SHExpandLSQ`](@ref)
+"""
 function SHMultiply(cilm1::AbstractArray{Cdouble,3}, lmax1::Integer,
                     cilm2::AbstractArray{Cdouble,3}, lmax2::Integer;
                     precomp::Bool=false, norm::Integer=1, csphase::Integer=1,

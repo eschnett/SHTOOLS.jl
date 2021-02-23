@@ -89,21 +89,30 @@ MakeGradientDH
 ### Gauss-Legendre quadrature grids 
 
 ```@docs
+SHGLQ!
 SHGLQ
+SHExpandGLQ!
 SHExpandGLQ
+MakeGridGLQ!
 MakeGridGLQ
+SHExpandGLQC!
 SHExpandGLQC
+MakeGridGLQC!
 MakeGridGLQC
+GLQGridCoord!
 GLQGridCoord
 ```
 
 ### Other routines
 
 ```@docs
+SHExpandLSQ!
 SHExpandLSQ
+MakeGrid2d!
 MakeGrid2d
 MakeGridPoint
 MakeGridPointC
+SHMultiply!
 SHMultiply
 ```
 
