@@ -62,3 +62,10 @@ MakeGridPoint
 MakeGridPointC
 SHMultiply
 ```
+
+### Spherical harmonic I/O, storage, and conversions
+
+```Julia
+SHCilmToVector
+SHVectorToCilm
+```
