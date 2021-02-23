@@ -287,10 +287,20 @@ end
     # Choose random values
     lmax1 = 2
     lmax2 = 3
+    lmax3 = 2
     cilm1 = randn(2, lmax1 + 1, lmax1 + 1)
     cilm2 = randn(2, lmax2 + 1, lmax2 + 1)
-    cilmout = SHMultiply(cilm1, lmax1, cilm2, lmax2)
-    @test size(cilmout) == (2, lmax1 + lmax2 + 1, lmax1 + lmax2 + 1)
+    cilm3 = randn(2, lmax3 + 1, lmax3 + 1)
+
+    # Test associativity
+    cilm12 = SHMultiply(cilm1, lmax1, cilm2, lmax2)
+    @test size(cilm12) == (2, lmax1 + lmax2 + 1, lmax1 + lmax2 + 1)
+    cilm123 = SHMultiply(cilm12, lmax1 + lmax2, cilm3, lmax3)
+    cilm23 = SHMultiply(cilm2, lmax2, cilm3, lmax3)
+    cilm123′ = SHMultiply(cilm1, lmax1, cilm23, lmax2 + lmax3)
+    @test isapprox(cilm123, cilm123′)
+
+    # TODO: Could test multiplicative unit, linearity, distributivity
 end
 
 ################################################################################
