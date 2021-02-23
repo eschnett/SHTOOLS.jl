@@ -2,6 +2,38 @@
 
 # Equally sampled (N×N) and equally spaced (N×2N) grids
 
+"""
+    cilm, lmax = SHExpandDH!(cilm::AbstractArray{Cdouble,3},
+                             griddh::AbstractArray{Cdouble,2},
+                             n::Integer;
+                             norm::Integer=1,
+                             sampling::Integer=1,
+                             csphase::Integer=1,
+                             lmax_calc::Optional{Integer}=nothing,
+                             exitstatus::Optional{Ref{<:Integer}}=nothing)
+    cilm::AbstractArray{Cdouble,3}
+    lmax:Int
+
+    cilm, lmax = SHExpandDH!(cilm::AbstractArray{Complex{Cdouble},3},
+                             griddh::AbstractArray{Complex{Cdouble},2},
+                             n::Integer;
+                             norm::Integer=1,
+                             sampling::Integer=1,
+                             csphase::Integer=1,
+                             lmax_calc::Optional{Integer}=nothing,
+                             exitstatus::Optional{Ref{<:Integer}}=nothing)
+    cilm::AbstractArray{Complex{Cdouble},3}
+    lmax:Int
+
+Expand an equally sampled or equally spaced map into real or complex
+spherical harmonics using Driscoll and Healy’s (1994) sampling
+theorem.
+
+See also: [`SHExpandDH`](@ref), [`MakeGridDH!`](@ref),
+[`MakeGradientDH!`](@ref)
+"""
+function SHExpandDH! end
+
 export SHExpandDH!
 function SHExpandDH!(cilm::AbstractArray{Cdouble,3},
                      griddh::AbstractArray{Cdouble,2}, n::Integer;
@@ -34,6 +66,36 @@ function SHExpandDH!(cilm::AbstractArray{Cdouble,3},
     return cilm, Int(lmax′[])
 end
 
+"""
+    cilm, lmax = SHExpandDH(griddh::AbstractArray{Cdouble,2},
+                            n::Integer;
+                            norm::Integer=1,
+                            sampling::Integer=1,
+                            csphase::Integer=1,
+                            lmax_calc::Optional{Integer}=nothing,
+                            exitstatus::Optional{Ref{<:Integer}}=nothing)
+    cilm::Array{Cdouble,3}
+    lmax:Int
+
+    cilm, lmax = SHExpandDH(griddh::AbstractArray{Complex{Cdouble},2},
+                            n::Integer;
+                            norm::Integer=1,
+                            sampling::Integer=1,
+                            csphase::Integer=1,
+                            lmax_calc::Optional{Integer}=nothing,
+                            exitstatus::Optional{Ref{<:Integer}}=nothing)
+    cilm::Array{Complex{Cdouble},3}
+    lmax:Int
+
+Expand an equally sampled or equally spaced map into real or complex
+spherical harmonics using Driscoll and Healy’s (1994) sampling
+theorem.
+
+See also: [`SHExpandDH!`](@ref), [`MakeGridDH`](@ref),
+[`MakeGradientDH`](@ref)
+"""
+function SHExpandDH end
+
 export SHExpandDH
 function SHExpandDH(griddh::AbstractArray{Cdouble,2}, n::Integer;
                     norm::Integer=1, sampling::Integer=1, csphase::Integer=1,
@@ -47,6 +109,40 @@ function SHExpandDH(griddh::AbstractArray{Cdouble,2}, n::Integer;
                           exitstatus=exitstatus)
     return cilm, lmax
 end
+
+"""
+    MakeGridDH!(griddh::AbstractArray{Cdouble,2},
+                cilm::AbstractArray{Cdouble,3},
+                lmax::Integer;
+                norm::Integer=1,
+                sampling::Integer=1,
+                csphase::Integer=1,
+                lmax_calc::Optional{Integer}=nothing,
+                extend::Integer=0,
+                exitstatus::Optional{Ref{<:Integer}}=nothing)
+    griddh::AbstractArray{Cdouble,2}
+    n::Int
+
+    MakeGridDH!(griddh::AbstractArray{Complex{Cdouble},2},
+                cilm::AbstractArray{Complex{Cdouble},3},
+                lmax::Integer;
+                norm::Integer=1,
+                sampling::Integer=1,
+                csphase::Integer=1,
+                lmax_calc::Optional{Integer}=nothing,
+                extend::Integer=0,
+                exitstatus::Optional{Ref{<:Integer}}=nothing)
+    griddh::AbstractArray{Complex{Cdouble},2}
+    n::Int
+
+Create a 2D map from a set of real or complex spherical harmonic
+coefficients that conforms with Driscoll and Healy’s (1994) sampling
+theorem.
+
+See also: [`SHExpandDH!`](@ref), [`MakeGridDH`](@ref),
+[`MakeGradientDH!`](@ref)
+"""
+function MakeGridDH! end
 
 export MakeGridDH!
 function MakeGridDH!(griddh::AbstractArray{Cdouble,2},
@@ -79,6 +175,38 @@ function MakeGridDH!(griddh::AbstractArray{Cdouble,2},
     end
     return griddh, n′
 end
+
+"""
+    MakeGridDH(cilm::AbstractArray{Cdouble,3},
+               lmax::Integer;
+               norm::Integer=1,
+               sampling::Integer=1,
+               csphase::Integer=1,
+               lmax_calc::Optional{Integer}=nothing,
+               extend::Integer=0,
+               exitstatus::Optional{Ref{<:Integer}}=nothing)
+    griddh::Array{Cdouble,2}
+    n::Int
+
+    MakeGridDH(cilm::AbstractArray{Complex{Cdouble},3},
+               lmax::Integer;
+               norm::Integer=1,
+               sampling::Integer=1,
+               csphase::Integer=1,
+               lmax_calc::Optional{Integer}=nothing,
+               extend::Integer=0,
+               exitstatus::Optional{Ref{<:Integer}}=nothing)
+    griddh::Array{Complex{Cdouble},2}
+    n::Int
+
+Create a 2D map from a set of real or complex spherical harmonic
+coefficients that conforms with Driscoll and Healy’s (1994) sampling
+theorem.
+
+See also: [`SHExpandDH`](@ref), [`MakeGridDH!`](@ref),
+[`MakeGradientDH`](@ref)
+"""
+function MakeGridDH end
 
 export MakeGridDH
 function MakeGridDH(cilm::AbstractArray{Cdouble,3}, lmax::Integer;
@@ -120,7 +248,7 @@ function SHExpandDH!(cilm::AbstractArray{Complex{Cdouble},3},
           griddh, size(griddh, 1), size(griddh, 2), n, cilm, size(cilm, 2),
           lmax′, norm, sampling, csphase, lmax_calc′, exitstatus′)
     if exitstatus === nothing
-        exitstatus′[] ≠ 0 && error("SHExpandDHC!: Error code $(exitstatus′[])")
+        exitstatus′[] ≠ 0 && error("SHExpandDH!: Error code $(exitstatus′[])")
     else
         exitstatus[] = exitstatus′[]
     end
@@ -141,8 +269,19 @@ function SHExpandDH(griddh::AbstractArray{Complex{Cdouble},2}, n::Integer;
 end
 
 export SHExpandDHC!
+"""
+    SHExpandDHC!(...)
+
+Alias for [`SHExpandDH!`](@ref)
+"""
 const SHExpandDHC! = SHExpandDH!
+
 export SHExpandDHC
+"""
+    SHExpandDHC(...)
+
+Alias for [`SHExpandDH`](@ref)
+"""
 const SHExpandDHC = SHExpandDH
 
 function MakeGridDH!(griddh::AbstractArray{Complex{Cdouble},2},
@@ -170,7 +309,7 @@ function MakeGridDH!(griddh::AbstractArray{Complex{Cdouble},2},
           size(cilm, 2), lmax, norm, sampling, csphase, lmax_calc′, extend,
           exitstatus′)
     if exitstatus === nothing
-        exitstatus′[] ≠ 0 && error("MakeGridDHC!: Error code $(exitstatus′[])")
+        exitstatus′[] ≠ 0 && error("MakeGridDH!: Error code $(exitstatus′[])")
     else
         exitstatus[] = exitstatus′[]
     end
@@ -193,11 +332,43 @@ function MakeGridDH(cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer;
 end
 
 export MakeGridDHC!
+"""
+    MakeGridDHC!(...)
+
+Alias for [`MakeGridDH!`](@ref)
+"""
 const MakeGridDHC! = MakeGridDH!
 export MakeGridDHC
+"""
+    MakeGridDHC(...)
+
+Alias for [`MakeGridDH`](@ref)
+"""
 const MakeGridDHC = MakeGridDH
 
 export MakeGradientDH!
+"""
+    MakeGradientDH!(theta::AbstractArray{Cdouble,2},
+                    phi::AbstractArray{Cdouble,2},
+                    cilm::AbstractArray{Cdouble,3},
+                    lmax::Integer;
+                    norm::Integer=1,
+                    sampling::Integer=1,
+                    csphase::Integer=1,
+                    lmax_calc::Optional{Integer}=nothing,
+                    extend::Integer=0,
+                    exitstatus::Optional{Ref{<:Integer}}=nothing)
+    theta::AbstractArray{Cdouble,2}
+    phi::AbstractArray{Cdouble,2}
+    n::Int
+
+Compute the gradient of a scalar function and return grids of the two
+horizontal components that conform with Driscoll and Healy’s (1994)
+sampling theorem.
+
+See also: [`MakeGradientDH`](@ref), [`SHExpandDH!`](@ref),
+[`MakeGridDH!`](@ref)
+"""
 function MakeGradientDH!(theta::AbstractArray{Cdouble,2},
                          phi::AbstractArray{Cdouble,2},
                          cilm::AbstractArray{Cdouble,3}, lmax::Integer;
@@ -232,6 +403,26 @@ function MakeGradientDH!(theta::AbstractArray{Cdouble,2},
 end
 
 export MakeGradientDH
+"""
+    MakeGradientDH(cilm::AbstractArray{Cdouble,3},
+                   lmax::Integer;
+                   norm::Integer=1,
+                   sampling::Integer=1,
+                   csphase::Integer=1,
+                   lmax_calc::Optional{Integer}=nothing,
+                   extend::Integer=0,
+                   exitstatus::Optional{Ref{<:Integer}}=nothing)
+    theta::Array{Cdouble,2}
+    phi::Array{Cdouble,2}
+    n::Int
+
+Compute the gradient of a scalar function and return grids of the two
+horizontal components that conform with Driscoll and Healy’s (1994)
+sampling theorem.
+
+See also: [`MakeGradientDH!`](@ref), [`SHExpandDH`](@ref),
+[`MakeGridDH`](@ref)
+"""
 function MakeGradientDH(cilm::AbstractArray{Cdouble,3}, lmax::Integer;
                         sampling::Integer=1,
                         lmax_calc::Optional{Integer}=nothing, extend::Integer=0,
@@ -433,7 +624,7 @@ function SHExpandGLQ!(cilm::AbstractArray{Complex{Cdouble},3}, lmax::Integer,
           optional(plx, Ptr{Cdouble}()), optional(zero, Ptr{Cdouble}()), norm,
           csphase, lmax_calc′, exitstatus′)
     if exitstatus === nothing
-        exitstatus′[] ≠ 0 && error("SHExpandGLQC!: Error code $(exitstatus′[])")
+        exitstatus′[] ≠ 0 && error("SHExpandGLQ!: Error code $(exitstatus′[])")
     else
         exitstatus[] = exitstatus′[]
     end
@@ -492,7 +683,7 @@ function MakeGridGLQ!(gridglq::AbstractArray{Complex{Cdouble},2},
           optional(zero, Ptr{Cdouble}()), norm, csphase, lmax_calc′, extend,
           exitstatus′)
     if exitstatus === nothing
-        exitstatus′[] ≠ 0 && error("MakeGridGLQC!: Error code $(exitstatus′[])")
+        exitstatus′[] ≠ 0 && error("MakeGridGLQ!: Error code $(exitstatus′[])")
     else
         exitstatus[] = exitstatus′[]
     end

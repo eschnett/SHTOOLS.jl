@@ -74,10 +74,15 @@ PlmIndex
 ### Equally sampled (N×N) and equally spaced (N×2N) grids
 
 ```@docs
+SHExpandDH!
 SHExpandDH
+MakeGridDH!
 MakeGridDH
+SHExpandDHC!
 SHExpandDHC
+MakeGridDHC!
 MakeGridDHC
+MakeGradientDH!
 MakeGradientDH
 ```
 
