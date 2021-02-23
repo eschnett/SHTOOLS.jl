@@ -136,7 +136,7 @@ function PlmON_d1! end
 Compute all the orthonormalized associated Legendre functions and first
 derivatives.
 
-See also: [`PlmON`](@ref), [`PlmON_d1!`](@ref), [`PlON_d!`](@ref),
+See also: [`PlmON`](@ref), [`PlmON_d1!`](@ref), [`PlON_d1`](@ref),
 [`PlmBar_d1`](@ref), [`PlmSchmidt_d1`](@ref), [`PLegendreA_d1`](@ref),
 [`PlmIndex`](@ref)
 """
@@ -533,7 +533,7 @@ function PlON_d1! end
 Compute all the orthonormalized associated Legendre functions and first
 derivatives.
 
-See also: [`PlON`](@ref), [`PlON_d1!`](@ref), [`PlmON_d!`](@ref),
+See also: [`PlON`](@ref), [`PlON_d1!`](@ref), [`PlmON_d1`](@ref),
 [`PlBar_d1`](@ref), [`PlSchmidt_d1`](@ref), [`PLegendre_d1`](@ref)
 """
 function PlON_d1 end
@@ -653,7 +653,7 @@ Compute all the unnormalized associated Legendre functions and first
 derivatives.
 
 See also: [`PLegendre`](@ref), [`PLegendre_d1!`](@ref),
-[`PLegendre!_d1`](@ref), [`PlBar_d1`](@ref), [`PlON_d1`](@ref),
+[`PLegendre_d1!`](@ref), [`PlBar_d1`](@ref), [`PlON_d1`](@ref),
 [`PlSchmidt_d1`](@ref)
 """
 function PLegendre_d1 end
