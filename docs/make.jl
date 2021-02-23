@@ -6,11 +6,7 @@ push!(LOAD_PATH, "..")
 using Documenter
 using SHTOOLS
 
-makedocs(
-    sitename = "SHTOOLS",
-    format = Documenter.HTML(),
-    modules = [SHTOOLS]
-)
+makedocs(; sitename="SHTOOLS", format=Documenter.HTML(), modules=[SHTOOLS])
 
-deploydocs(repo = "github.com/eschnett/JuliaFormatter.jl.git",
-           push_preview = true)
+deploydocs(; repo="github.com/eschnett/JuliaFormatter.jl.git", devbranch="main",
+           push_preview=true)
