@@ -16,6 +16,210 @@ optional(x::Optional, x0) = x !== nothing ? x : x0
 # Unnormalized
 # Utilities
 
+"""
+    PlmBar!(p::AbstractVector{Cdouble},
+            lmax::Integer,
+            z::Union{AbstractFloat,Integer};
+            csphase::Integer=1,
+            cnorm::Integer=0,
+            exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+
+Compute all the 4π-normalized associated Legendre functions.
+
+See also: [`PlmBar`](@ref), [`PlmBar_d1!`](@ref), [`PlBar!`](@ref),
+[`PlmON!`](@ref), [`PlmSchmidt!`](@ref), [`PlmLegendreA!`](@ref),
+[`PlmIndex`](@ref)
+"""
+function PlmBar! end
+
+"""
+    p = PlmBar(lmax::Integer,
+               z::Union{AbstractFloat,Integer};
+               csphase::Integer=1,
+               cnorm::Integer=0,
+               exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+    p::Vector{Cdouble}
+
+Compute all the 4π-normalized associated Legendre functions.
+
+See also: [`PlmBar!`](@ref), [`PlmBar_d1`](@ref), [`PlBar`](@ref),
+[`PlmON`](@ref), [`PlmSchmidt`](@ref), [`PlmLegendreA`](@ref),
+[`PlmIndex`](@ref)
+"""
+function PlmBar end
+
+"""
+    PlmBar_d1!(p::AbstractVector{Cdouble},
+               dp::AbstractVector{Cdouble}, 
+               lmax::Integer,
+               z::Union{AbstractFloat,Integer};
+               csphase::Integer=1,
+               cnorm::Integer=0,
+               exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+
+Compute all the 4π-normalized associated Legendre functions and first
+derivatives.
+
+See also: [`PlmBar_d1`](@ref), [`PlmBar_d1`](@ref),
+[`PlBar_d1!`](@ref), [`PlmON_d1!`](@ref), [`PlmSchmidt_d1!`](@ref),
+[`PlmLegendreA_d1!`](@ref), [`PlmIndex`](@ref)
+"""
+function PlmBar_d1! end
+
+"""
+    p, dp = PlmBar_d1(lmax::Integer,
+                      z::Union{AbstractFloat,Integer};
+                      csphase::Integer=1,
+                      cnorm::Integer=0,
+                      exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+    p::Vector{Cdouble}
+    dp::Vector{Cdouble}
+
+Compute all the 4π-normalized associated Legendre functions and first
+derivatives.
+
+See also: [`PlmBar`](@ref), [`PlmBar_d1!`](@ref), [`PlBar_d1`](@ref),
+[`PlmON_d1`](@ref), [`PlmSchmidt_d1`](@ref),
+[`PlmLegendreA_d1`](@ref), [`PlmIndex`](@ref)
+"""
+function PlmBar_d1 end
+
+"""
+    PlmON!(p::AbstractVector{Cdouble},
+           lmax::Integer,
+           z::Union{AbstractFloat,Integer};
+           csphase::Integer=1,
+           cnorm::Integer=0,
+           exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+
+Compute all the orthonormalized associated Legendre functions.
+
+See also: [`PlmON`](@ref), [`PlmON_d1!`](@ref), [`PlON!`](@ref),
+[`PlmBar!`](@ref), [`PlmSchmidt!`](@ref), [`PlmLegendreA!`](@ref),
+[`PlmIndex`](@ref)
+"""
+function PlmON! end
+
+"""
+    p = PlmON(lmax::Integer,
+              z::Union{AbstractFloat,Integer};
+              csphase::Integer=1,
+              cnorm::Integer=0,
+              exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+    p::Vector{Cdouble}
+
+Compute all the orthonormalized associated Legendre functions.
+
+See also: [`PlmON!`](@ref), [`PlmON_d1`](@ref), [`PlON`](@ref),
+[`PlmBar`](@ref), [`PlmSchmidt`](@ref), [`PlmLegendreA`](@ref),
+[`PlmIndex`](@ref)
+"""
+function PlmON end
+
+"""
+    PlmON_d1!(p::AbstractVector{Cdouble},
+              dp::AbstractVector{Cdouble}, 
+              lmax::Integer,
+              z::Union{AbstractFloat,Integer};
+              csphase::Integer=1,
+              cnorm::Integer=0,
+              exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+
+Compute all the orthonormalized associated Legendre functions and
+first derivatives.
+
+See also: [`PlmON_d1`](@ref), [`PlmON_d1`](@ref), [`PlON_d1!`](@ref),
+[`PlmBar_d1!`](@ref), [`PlmSchmidt_d1!`](@ref),
+[`PlmLegendreA_d1!`](@ref), [`PlmIndex`](@ref)
+"""
+function PlmON_d1! end
+
+"""
+    p, dp = PlmON_d1(lmax::Integer,
+                     z::Union{AbstractFloat,Integer};
+                     csphase::Integer=1,
+                     cnorm::Integer=0,
+                     exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+    p::Vector{Cdouble}
+    dp::Vector{Cdouble}
+
+Compute all the orthonormalized associated Legendre functions and first
+derivatives.
+
+See also: [`PlmON`](@ref), [`PlmON_d1!`](@ref), [`PlON_d!`](@ref),
+[`PlmBar_d1`](@ref), [`PlmSchmidt_d1`](@ref),
+[`PlmLegendreA_d1`](@ref), [`PlmIndex`](@ref)
+"""
+function PlmON_d1 end
+
+"""
+    PlmSchmidt!(p::AbstractVector{Cdouble},
+                lmax::Integer,
+                z::Union{AbstractFloat,Integer};
+                csphase::Integer=1,
+                cnorm::Integer=0,
+                exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+
+Compute all the Schmidt-normalized associated Legendre functions.
+
+See also: [`PlmSchmidt`](@ref), [`PlmSchmidt_d1!`](@ref),
+[`PlSchmidt!`](@ref), [`PlmBar!`](@ref), [`PlmON!`](@ref),
+[`PlmLegendreA!`](@ref), [`PlmIndex`](@ref)
+"""
+function PlmSchmidt! end
+
+"""
+    p = PlmSchmidt(lmax::Integer,
+                   z::Union{AbstractFloat,Integer};
+                   csphase::Integer=1,
+                   cnorm::Integer=0,
+                   exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+    p::Vector{Cdouble}
+
+Compute all the Schmidt-normalized associated Legendre functions.
+
+See also: [`PlmSchmidt!`](@ref), [`PlmSchmidt_d1`](@ref),
+[`PlSchmidt`](@ref), [`PlmBar`](@ref), [`PlmON`](@ref),
+[`PlmLegendreA`](@ref), [`PlmIndex`](@ref)
+"""
+function PlmSchmidt end
+
+"""
+    PlmSchmidt_d1!(p::AbstractVector{Cdouble},
+                   dp::AbstractVector{Cdouble}, 
+                   lmax::Integer,
+                   z::Union{AbstractFloat,Integer};
+                   csphase::Integer=1,
+                   cnorm::Integer=0,
+                   exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+
+Compute all the Schmidt-normalized associated Legendre functions and
+first derivatives.
+
+See also: [`PlmSchmidt_d1`](@ref), [`PlmSchmidt_d1`](@ref),
+[`PlSchmidt_d1!`](@ref), [`PlmBar_d1!`](@ref), [`PlmON_d1!`](@ref),
+[`PlmLegendreA_d1!`](@ref), [`PlmIndex`](@ref)
+"""
+function PlmSchmidt_d1! end
+
+"""
+    p, dp = PlmSchmidt_d1(lmax::Integer,
+                          z::Union{AbstractFloat,Integer};
+                          csphase::Integer=1,
+                          cnorm::Integer=0,
+                          exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+    p::Vector{Cdouble}
+    dp::Vector{Cdouble}
+
+Compute all the Schmidt-normalized associated Legendre functions and
+first derivatives.
+
+See also: [`PlmSchmidt`](@ref), [`PlmSchmidt_d1!`](@ref),
+[`PlSchmidt_d1`](@ref), [`PlmBar_d1`](@ref), [`PlmON_d1`](@ref),
+[`PlmLegendreA_d1`](@ref), [`PlmIndex`](@ref)
+"""
+function PlmSchmidt_d1 end
+
 for op in [:PlmBar, :PlmON, :PlmSchmidt]
     op! = Symbol(op, "!")
     op_d1 = Symbol(op, "_d1")
@@ -94,6 +298,70 @@ for op in [:PlmBar, :PlmON, :PlmSchmidt]
         #
     end
 end
+
+"""
+    PLegendreA!(p::AbstractVector{Cdouble},
+                lmax::Integer,
+                z::Union{AbstractFloat,Integer};
+                csphase::Integer=1,
+                exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+
+Compute all the unnormalized associated Legendre functions.
+
+See also: [`PLegendreA`](@ref), [`PLegendreA_d1!`](@ref),
+[`PLegendre`](@ref), [`PlmBar!`](@ref), [`PlmON!`](@ref),
+[`PlmSchmidt!`](@ref), [`PlmIndex`](@ref)
+"""
+function PLegendreA! end
+
+"""
+    p = PLegendreA(lmax::Integer,
+                   z::Union{AbstractFloat,Integer};
+                   csphase::Integer=1,
+                   exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+    p::Vector{Cdouble}
+
+Compute all the unnormalized associated Legendre functions.
+
+See also: [`PLegendreA!`](@ref), [`PLegendreA_d1`](@ref),
+[`PLegendre`](@ref), [`PlmBar`](@ref), [`PlmON`](@ref),
+[`PlmSchmidt`](@ref), [`PlmIndex`](@ref)
+"""
+function PLegendreA end
+
+"""
+    PLegendreA_d1!(p::AbstractVector{Cdouble},
+                   dp::AbstractVector{Cdouble}, 
+                   lmax::Integer,
+                   z::Union{AbstractFloat,Integer};
+                   csphase::Integer=1,
+                   exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+
+Compute all the unnormalized associated Legendre functions and first
+derivatives.
+
+See also: [`PLegendreA_d1`](@ref), [`PLegendreA_d1`](@ref),
+[`PLegendre_d1!`](@ref), [`PlmBar_d1!`](@ref), [`PlmON_d1!`](@ref),
+[`PlmSchmidt_d1!`](@ref), [`PlmIndex`](@ref)
+"""
+function PLegendreA_d1! end
+
+"""
+    p, dp = PLegendreA_d1(lmax::Integer,
+                            z::Union{AbstractFloat,Integer};
+                            csphase::Integer=1,
+                            exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+    p::Vector{Cdouble}
+    dp::Vector{Cdouble}
+
+Compute all the unnormalized associated Legendre functions and first
+derivatives.
+
+See also: [`PLegendreA`](@ref), [`PLegendreA_d1!`](@ref),
+[`PLegendre_d1`](@ref), [`PlmBar_d1`](@ref), [`PlmON_d1`](@ref),
+[`PlmSchmidt_d1`](@ref), [`PlmIndex`](@ref)
+"""
+function PLegendreA_d1 end
 
 for op in [:PLegendreA]
     op! = Symbol(op, "!")
