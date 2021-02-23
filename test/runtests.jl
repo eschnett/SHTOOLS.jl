@@ -6,7 +6,7 @@ using Test
 
 # Legendre Polynomials
 
-@testset "PlmBar" begin
+@testset "PlmBar and PlBar" begin
     p = PlmBar(4, 0)
     p′ = zeros(15)
     PlmBar!(p′, 4, 0)
@@ -30,7 +30,7 @@ using Test
     @test dp′ == dp
 end
 
-@testset "PlmON" begin
+@testset "PlmON and PlON" begin
     p = PlmON(4, 0)
     p′ = zeros(15)
     PlmON!(p′, 4, 0)
@@ -54,7 +54,7 @@ end
     @test dp′ == dp
 end
 
-@testset "PlmSchmidt" begin
+@testset "PlmSchmidt and PlSchmidt" begin
     p = PlmSchmidt(4, 0)
     p′ = zeros(15)
     PlmSchmidt!(p′, 4, 0)
@@ -78,7 +78,7 @@ end
     @test dp′ == dp
 end
 
-@testset "PLegendreA" begin
+@testset "PLegendreA and PLegendre" begin
     p = PLegendreA(4, 0)
     p′ = zeros(15)
     PLegendreA!(p′, 4, 0)
