@@ -22,7 +22,7 @@
     @test isapprox(cindex′, cindex)
 end
 
-@testset "SHCilmToVector and SHVectorToCilm" begin
+@testset "SHCilmToVector SHVectorToCilm, and YlmIndexVector" begin
     Random.seed!(0)
     # Choose random values
     lmax = 2
@@ -30,10 +30,14 @@ end
 
     vector = SHCilmToVector(cilm, lmax)
     @test length(vector) == (lmax + 1)^2
-    # These loops test all values in vector
+    coverage = falses(length(vector))
     for l in 0:lmax, m in 0:l, i in 1:(1 + (m > 0))
-        @test vector[l^2 + (i - 1) * l + m + 1] == cilm[i, l + 1, m + 1]
+        index = YlmIndexVector(i, l, m)
+        @test !coverage[index]
+        coverage[index] = true
+        @test vector[index] == cilm[i, l + 1, m + 1]
     end
+    @test all(coverage)
 
     cilm′ = SHVectorToCilm(vector, lmax)
     for l in 0:lmax, m in 0:l, i in 1:(1 + (m > 0))

@@ -247,3 +247,20 @@ function SHVectorToCilm(vector::AbstractVector{Cdouble}, lmax::Integer;
     SHVectorToCilm!(cilm, vector, lmax; exitstatus=exitstatus)
     return cilm
 end
+
+export YlmIndexVector
+"""
+    index = YlmIndexVector(i, l, m)
+
+Determine the index of a 1D ordered vector of spherical harmonic
+coefficients corresponding to `i`, `l`, and `m`.
+
+See also: [`SHCilmToVector!`](@ref), [`SHCilmToVector`](@ref),
+[`SHVectorToCilm!`](@ref), [`SHVectorToCilm`](@ref)
+"""
+function YlmIndexVector(i::Integer, l::Integer, m::Integer)
+    @assert 1 ≤ i ≤ 2
+    @assert 0 ≤ l
+    @assert 0 ≤ m ≤ l
+    return l^2 + (i - 1) * l + m + 1
+end
