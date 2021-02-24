@@ -121,10 +121,15 @@ SHMultiply
 ### Spherical harmonic storage
 
 ```@docs
+SHCilmToCindex!
+SHCilmToCindex
+SHCindexToCilm!
+SHCindexToCilm
 SHCilmToVector!
 SHCilmToVector
 SHVectorToCilm!
 SHVectorToCilm
+YlmIndexVector
 ```
 
 ### Spherical harmonic conversions

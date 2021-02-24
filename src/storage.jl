@@ -8,6 +8,137 @@
 
 # Spherical harmonic storage
 
+export SHCilmToCindex!
+"""
+    cindex = SHCilmToCindex!(cindex::AbstractArray{Cdouble,2},
+                             cilm::AbstractArray{Cdouble,3};
+                             degmax::Optional{Cint}=nothing,
+                             exitstatus::Optional{Ref{<:Integer}}=nothing)
+    cindex::AbstractArray{Cdouble,2}
+
+Convert a three-dimensional array of spherical harmonic coefficients
+to a two-dimensional indexed array.
+
+See also: [`SHCilmToCindex`](@ref), [`SHCindexToCilm!`](@ref),
+[`SHCilmToVector!`](@ref)
+"""
+function SHCilmToCindex!(cindex::AbstractArray{Cdouble,2},
+                         cilm::AbstractArray{Cdouble,3};
+                         degmax::Optional{Cint}=nothing,
+                         exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert size(cilm, 1) == 2
+    lmaxin = size(cilm, 2) - 1
+    @assert lmaxin ≥ 0
+    @assert size(cilm, 3) == size(cilm, 2)
+    degmax′ = optional(degmax, lmaxin)
+    @assert size(cindex, 1) == 2
+    @assert size(cindex, 2) ≥ (degmax′ + 1) * (degmax′ + 2) ÷ 2
+    exitstatus′ = Ref{Cint}()
+    ccall((:SHCilmToCindex, libSHTOOLS), Cvoid,
+          (Ptr{Cdouble}, Cint, Ptr{Cdouble}, Cint, Ref{Cint}, Ref{Cint}), cilm,
+          size(cilm, 2), cindex, size(cindex, 2), degmax′, exitstatus′)
+    if exitstatus === nothing
+        exitstatus′[] ≠ 0 &&
+            error("SHCilmToCindex!: Error code $(exitstatus′[])")
+    else
+        exitstatus[] = exitstatus′[]
+    end
+    return cindex
+end
+
+export SHCilmToCindex
+"""
+    cindex = SHCilmToCindex(cilm::AbstractArray{Cdouble,3};
+                            degmax::Optional{Cint}=nothing,
+                            exitstatus::Optional{Ref{<:Integer}}=nothing)
+    cindex::Array{Cdouble,2}
+
+Convert a three-dimensional array of spherical harmonic coefficients
+to a two-dimensional indexed array.
+
+See also: [`SHCilmToCindex!`](@ref), [`SHCindexToCilm`](@ref),
+[`SHCilmToVector`](@ref)
+"""
+function SHCilmToCindex(cilm::AbstractArray{Cdouble,3};
+                        degmax::Optional{Cint}=nothing,
+                        exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert size(cilm, 1) == 2
+    lmaxin = size(cilm, 2) - 1
+    @assert lmaxin ≥ 0
+    @assert size(cilm, 3) == size(cilm, 2)
+    degmax′ = optional(degmax, lmaxin)
+    cindex = Array{Cdouble}(undef, 2, (degmax′ + 1) * (degmax′ + 2) ÷ 2)
+    SHCilmToCindex!(cindex, cilm; degmax=degmax, exitstatus=exitstatus)
+    return cindex
+end
+
+export SHCindexToCilm!
+"""
+    cilm = SHCindexToCilm!(cilm::AbstractArray{Cdouble,3},
+                           cindex::AbstractArray{Cdouble,2};
+                           degmax::Optional{Cint}=nothing,
+                           exitstatus::Optional{Ref{<:Integer}}=nothing)
+    cilm::AbstractArray{Cdouble,3},
+
+Convert a two-dimensional indexed array of spherical harmonic
+coefficients to a three-dimensional array.
+
+See also: [`SHCindexToCilm`](@ref), [`SHCilmToCindex!`](@ref),
+[`SHVectorToCilm!`](@ref)
+"""
+function SHCindexToCilm!(cilm::AbstractArray{Cdouble,3},
+                         cindex::AbstractArray{Cdouble,2};
+                         degmax::Optional{Cint}=nothing,
+                         exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert size(cindex, 1) == 2
+    # (lmaxin + 1) * (lmaxin + 2) ÷ 2 = size(cindex, 2)
+    lmaxin = round(Int, (sqrt(8 * size(cindex, 2) + 1) - 3) / 2)
+    @assert size(cindex, 2) == (lmaxin + 1) * (lmaxin + 2) ÷ 2
+    degmax′ = optional(degmax, lmaxin)
+    @assert size(cindex, 2) ≥ degmax′
+    @assert size(cilm, 1) == 2
+    @assert size(cilm, 2) ≥ degmax′ + 1
+    @assert size(cilm, 3) == size(cilm, 2)
+    exitstatus′ = Ref{Cint}()
+    ccall((:SHCindexToCilm, libSHTOOLS), Cvoid,
+          (Ptr{Cdouble}, Cint, Ptr{Cdouble}, Cint, Ref{Cint}, Ref{Cint}),
+          cindex, size(cindex, 2), cilm, size(cilm, 2), degmax′, exitstatus′)
+    if exitstatus === nothing
+        exitstatus′[] ≠ 0 &&
+            error("SHCindexToCilm!: Error code $(exitstatus′[])")
+    else
+        exitstatus[] = exitstatus′[]
+    end
+    return cilm
+end
+
+export SHCindexToCilm
+"""
+    cilm = SHCindexToCilm(cindex::AbstractArray{Cdouble,2};
+                          degmax::Optional{Cint}=nothing,
+                          exitstatus::Optional{Ref{<:Integer}}=nothing)
+    cilm::AbstractArray{Cdouble,3},
+
+Convert a two-dimensional indexed array of spherical harmonic
+coefficients to a three-dimensional array.
+
+See also: [`SHCindexToCilm!`](@ref), [`SHCilmToCindex`](@ref),
+[`SHVectorToCilm`](@ref)
+"""
+function SHCindexToCilm(cindex::AbstractArray{Cdouble,2},
+                        degmax::Optional{Cint}=nothing,
+                        exitstatus::Optional{Ref{<:Integer}}=nothing)
+    @assert size(cindex, 1) == 2
+    # (lmaxin + 1) * (lmaxin + 2) ÷ 2 = size(cindex, 2)
+    lmaxin = round(Int, (sqrt(8 * size(cindex, 2) + 1) - 3) / 2)
+    @assert size(cindex, 2) == (lmaxin + 1) * (lmaxin + 2) ÷ 2
+    degmax′ = optional(degmax, lmaxin)
+    @assert size(cindex, 2) ≥ degmax′
+    cilm = Array{Cdouble}(undef, 2, degmax′ + 1, degmax′ + 1)
+    SHCindexToCilm!(cilm, cindex; degmax=degmax, exitstatus=exitstatus)
+    return cilm
+end
+
 export SHCilmToVector!
 """
     SHCilmToVector!(vector::AbstractVector{Cdouble},
