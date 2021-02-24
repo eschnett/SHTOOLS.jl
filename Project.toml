@@ -1,7 +1,7 @@
 name = "SHTOOLS"
 uuid = "c916fbc8-b869-4f3a-86b1-58538899335e"
 authors = ["Erik Schnetter <schnetter@gmail.com>"]
-version = "1.0.0"
+version = "1.1.0"
 
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
