@@ -134,20 +134,30 @@ end
 @testset "MakeGridPoint" begin
     Random.seed!(0)
     # Choose random values
-    lmax = 2
-    nmax = (lmax + 1)^2
-    lat = π * rand(nmax)
-    lon = 2π * rand(nmax)
+    lmax = 4
+    ni = 4 * (lmax + 1)
+    nj = 4 * (lmax + 1)
+    nmax = ni * nj
+    lat = vec([(i + rand() - 1 / 2) * 180 / ni for i in 1:ni, j in 1:nj])
+    lon = vec([(j + rand() - 1 / 2) * 360 / nj for i in 1:ni, j in 1:nj])
     values = randn(nmax)
+    # A safety check
+    @test all(abs.(values) .≤ 100)
     weights = Float64[1 for n in 1:nmax]
 
     # Expand
     cilm, chi2 = SHExpandLSQ(values, lat, lon, nmax, lmax; weights=weights)
     @test size(cilm) == (2, lmax + 1, lmax + 1)
-    @test abs(chi2) < 10 * eps(Float64)
+    # We don't calculate all modes necessary to reconstruct all
+    # values, hence chi2 will be large
+    # @test abs(chi2) < 10 * eps(Float64)
+    # A safety check
+    @test all(abs.(cilm) .≤ 100)
 
     # Convert back to values (they will be low-pass filtered)
     values′ = Float64[MakeGridPoint(cilm, lmax, lat[n], lon[n]) for n in 1:nmax]
+    # A safety check
+    @test all(abs.(values′) .≤ 100)
 
     # Expand again (result must be the same)
     cilm′, chi2 = SHExpandLSQ(values′, lat, lon, nmax, lmax; weights=weights)
@@ -165,8 +175,8 @@ end
     # Choose random values
     lmax = 2
     cilm = randn(Complex{Float64}, 2, lmax + 1, lmax + 1)
-    lat = π * rand()
-    lon = 2π * rand()
+    lat = 180 * rand()
+    lon = 360 * rand()
     value = MakeGridPointC(cilm, lmax, lat, lon)
     @test value isa Complex{Float64}
 end
