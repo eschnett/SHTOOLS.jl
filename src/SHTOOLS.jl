@@ -9,5 +9,6 @@ optional(x::Optional, x0) = x !== nothing ? x : x0
 include("legendre.jl")
 include("transforms.jl")
 include("storage.jl")
+include("misc.jl")
 
 end

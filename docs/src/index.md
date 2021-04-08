@@ -133,3 +133,10 @@ YlmIndexVector
 ```
 
 ### Spherical harmonic conversions
+
+## Miscellaneous
+
+```@docs
+Wigner3j
+Wigner3j!
+```
