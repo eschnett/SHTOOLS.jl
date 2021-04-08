@@ -404,14 +404,14 @@ end
 
 export MakeGradientDH
 """
-    MakeGradientDH(cilm::AbstractArray{Cdouble,3},
-                   lmax::Integer;
-                   norm::Integer=1,
-                   sampling::Integer=1,
-                   csphase::Integer=1,
-                   lmax_calc::Union{Nothing,Integer}=nothing,
-                   extend::Integer=0,
-                   exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
+    theta, phi, n = MakeGradientDH(cilm::AbstractArray{Cdouble,3},
+                                   lmax::Integer;
+                                   norm::Integer=1,
+                                   sampling::Integer=1,
+                                   csphase::Integer=1,
+                                   lmax_calc::Union{Nothing,Integer}=nothing,
+                                   extend::Integer=0,
+                                   exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
     theta::Array{Cdouble,2}
     phi::Array{Cdouble,2}
     n::Int
@@ -433,9 +433,10 @@ function MakeGradientDH(cilm::AbstractArray{Cdouble,3}, lmax::Integer;
     n′ = Int(2 * lmax + 2)
     theta = Array{Cdouble}(undef, n′ + extend, sampling * n′ + extend)
     phi = Array{Cdouble}(undef, n′ + extend, sampling * n′ + extend)
-    MakeGradientDH!(theta, phi, cilm, lmax; sampling=sampling,
-                    lmax_calc=lmax_calc, extend=extend, exitstatus=exitstatus)
-    return theta, phi
+    _, _, n = MakeGradientDH!(theta, phi, cilm, lmax; sampling=sampling,
+                              lmax_calc=lmax_calc, extend=extend,
+                              exitstatus=exitstatus)
+    return theta, phi, n
 end
 
 export SHGLQ!
