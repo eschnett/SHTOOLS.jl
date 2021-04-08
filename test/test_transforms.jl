@@ -134,19 +134,21 @@ end
 @testset "MakeGridPoint" begin
     Random.seed!(0)
     # Choose random values
-    lmax = 2
-    nmax = 10 * (lmax + 1)^2
-    lat = 180 * rand(nmax)
-    lon = 360 * rand(nmax)
+    lmax = 4
+    nmax = (lmax + 1)^2
+    lat = vec([(i + rand() - 1 / 2) * 180 / (lmax + 1)
+               for i in 1:(lmax + 1), j in 1:(lmax + 1)])
+    lon = vec([(j + rand() - 1 / 2) * 360 / (lmax + 1)
+               for i in 1:(lmax + 1), j in 1:(lmax + 1)])
     values = randn(nmax)
     weights = Float64[1 for n in 1:nmax]
 
     # Expand
     cilm, chi2 = SHExpandLSQ(values, lat, lon, nmax, lmax; weights=weights)
     @test size(cilm) == (2, lmax + 1, lmax + 1)
-    # We don't calculate all modes necessary to reconstruct all
-    # values, hence chi2 will be large
-    # @test abs(chi2) < 10 * eps(Float64)
+    #TODO We don't calculate all modes necessary to reconstruct all
+    #TODO values, hence chi2 will be large
+    @test abs(chi2) < 10 * eps(Float64)
 
     # Convert back to values (they will be low-pass filtered)
     values′ = Float64[MakeGridPoint(cilm, lmax, lat[n], lon[n]) for n in 1:nmax]
