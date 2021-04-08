@@ -141,7 +141,8 @@ end
     lat = vec([(i + rand() - 1 / 2) * 180 / ni for i in 1:ni, j in 1:nj])
     lon = vec([(j + rand() - 1 / 2) * 360 / nj for i in 1:ni, j in 1:nj])
     values = randn(nmax)
-    @assert all(abs.(values) .≤ 100)
+    # A safety check
+    @test all(abs.(values) .≤ 100)
     weights = Float64[1 for n in 1:nmax]
 
     # Expand
