@@ -136,8 +136,8 @@ end
     # Choose random values
     lmax = 2
     nmax = (lmax + 1)^2
-    lat = π * rand(nmax)
-    lon = 2π * rand(nmax)
+    lat = 180 * rand(nmax)
+    lon = 360 * rand(nmax)
     values = randn(nmax)
     weights = Float64[1 for n in 1:nmax]
 
@@ -165,8 +165,8 @@ end
     # Choose random values
     lmax = 2
     cilm = randn(Complex{Float64}, 2, lmax + 1, lmax + 1)
-    lat = π * rand()
-    lon = 2π * rand()
+    lat = 180 * rand()
+    lon = 360 * rand()
     value = MakeGridPointC(cilm, lmax, lat, lon)
     @test value isa Complex{Float64}
 end
