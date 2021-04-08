@@ -135,7 +135,7 @@ end
     Random.seed!(0)
     # Choose random values
     lmax = 2
-    nmax = (lmax + 1)^2
+    nmax = 10 * (lmax + 1)^2
     lat = 180 * rand(nmax)
     lon = 360 * rand(nmax)
     values = randn(nmax)
@@ -144,7 +144,9 @@ end
     # Expand
     cilm, chi2 = SHExpandLSQ(values, lat, lon, nmax, lmax; weights=weights)
     @test size(cilm) == (2, lmax + 1, lmax + 1)
-    @test abs(chi2) < 10 * eps(Float64)
+    # We don't calculate all modes necessary to reconstruct all
+    # values, hence chi2 will be large
+    # @test abs(chi2) < 10 * eps(Float64)
 
     # Convert back to values (they will be low-pass filtered)
     values′ = Float64[MakeGridPoint(cilm, lmax, lat[n], lon[n]) for n in 1:nmax]
