@@ -18,3 +18,37 @@ in the argument list, and are omitted in non-mutating functions.
 
 The documentation lists the implemented functions as well as their
 Julia signatures.
+
+## Example: Calculate gradient of a scalar field
+
+```Julia
+julia> using SHTOOLS
+
+julia> n = 4;
+
+julia> nθ = n;
+
+julia> nϕ = 2n;
+
+julia> Θ = [π*(i-1)/nθ for i in 1:nθ];
+
+julia> Φ = [2π*(j-1)/nϕ for j in 1:nϕ];
+
+julia> # z + 2x
+       F = [cos(θ) + 2*sin(θ)*cos(ϕ) for θ in Θ, ϕ in Φ];
+
+julia> chop(x) = abs2(x) < 10eps(x) ? zero(x) : x;
+
+julia> C,lmax = SHExpandDH(F, n; sampling=2);
+
+julia> chop.(C[1,:,:])
+
+julia> chop.(C[2,:,:])
+
+julia> ∂θF, ∂ϕF, _ = MakeGradientDH(C, lmax; sampling=2);
+
+julia> chop.(∂θF)
+
+julia> chop.(∂ϕF)
+```
+These are wrong???
