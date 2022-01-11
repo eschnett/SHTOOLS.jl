@@ -357,6 +357,7 @@ export MakeGradientDH!
                     csphase::Integer=1,
                     lmax_calc::Union{Nothing,Integer}=nothing,
                     extend::Integer=0,
+                    radius::Union{Nothing,AbstractFloat,Integer}=nothing,
                     exitstatus::Union{Nothing,Ref{<:Integer}}=nothing)
     theta::AbstractArray{Cdouble,2}
     phi::AbstractArray{Cdouble,2}
@@ -375,6 +376,7 @@ function MakeGradientDH!(theta::AbstractArray{Cdouble,2},
                          sampling::Integer=1,
                          lmax_calc::Optional{Integer}=nothing,
                          extend::Integer=0,
+                         radius::Union{Nothing,AbstractFloat,Integer}=nothing,
                          exitstatus::Optional{Ref{<:Integer}}=nothing)
     @assert lmax ≥ 0
     @assert sampling ∈ (1, 2)
@@ -387,12 +389,13 @@ function MakeGradientDH!(theta::AbstractArray{Cdouble,2},
     @assert size(cilm, 2) ≥ lmax + 1
     @assert size(cilm, 3) == size(cilm, 2)
     lmax_calc′ = optional(lmax_calc, lmax)
+    radius′ = optional(radius, 1.0)
     exitstatus′ = Ref{Cint}()
     ccall((:MakeGradientDH, libSHTOOLS), Cvoid,
           (Ptr{Cdouble}, Cint, Cint, Ptr{Cdouble}, Ptr{Cdouble}, Cint, Cint,
-           Ref{Cint}, Ref{Cint}, Ref{Cint}, Ref{Cint}, Ref{Cint}), cilm,
+           Ref{Cint}, Ref{Cint}, Ref{Cint}, Ref{Cint}, Ref{Cdouble}, Ref{Cint}), cilm,
           size(cilm, 2), lmax, theta, phi, size(theta, 1), size(theta, 2), n′,
-          sampling, lmax_calc′, extend, exitstatus′)
+          sampling, lmax_calc′, extend, radius′, exitstatus′)
     if exitstatus === nothing
         exitstatus′[] ≠ 0 &&
             error("MakeGradientDH!: Error code $(exitstatus′[])")
