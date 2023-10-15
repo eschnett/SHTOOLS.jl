@@ -37,7 +37,7 @@ function Wigner3j!(w3j::AbstractVector{Cdouble},
     @assert abs(m2) ≤ j2 "m2 must satisfy $(-j2) <= m2 <= $j2 for j2 = $j2"
     @assert abs(m3) ≤ j3 "m3 must satisfy $(-j3) <= m3 <= $j3 for j3 = $j3"
     @assert abs(m1) ≤ j2 + j3 "m1 must satisfy $(-(j2 + j3)) <= m1 <= $(j2 + j3)"
-    w3j_minlength = j2 + j3 - max(abs(m1), abs(j2 - j3)) + 1
+    w3j_minlength = j2 + j3 + 1
     @assert length(w3j) ≥ w3j_minlength "length of w3j must be >= $w3j_minlength"
 
     exitstatus′ = Ref{Cint}()
@@ -88,7 +88,7 @@ function Wigner3j(j2::Integer, j3::Integer,
     @assert j3 ≥ 0 "j2 must be >= 0"
     @assert abs(m1) ≤ j2 + j3 "m1 must satisfy $(-(j2 + j3)) <= m1 <= $(j2 + j3)"
 
-    w3j_minlength = j2 + j3 - max(abs(m1), abs(j2 - j3)) + 1
+    w3j_minlength = j2 + j3 + 1
     w3j = Vector{Cdouble}(undef, w3j_minlength)
     w3j, jmin, jmax = Wigner3j!(w3j, j2, j3, m1, m2, m3, exitstatus)
     return w3j, jmin, jmax
