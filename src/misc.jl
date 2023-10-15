@@ -91,5 +91,6 @@ function Wigner3j(j2::Integer, j3::Integer,
     w3j_minlength = j2 + j3 + 1
     w3j = Vector{Cdouble}(undef, w3j_minlength)
     w3j, jmin, jmax = Wigner3j!(w3j, j2, j3, m1, m2, m3, exitstatus)
+    resize!(w3j, jmax - jmin + 1)
     return w3j, jmin, jmax
 end
