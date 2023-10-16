@@ -162,6 +162,9 @@ end
     # Expand again (result must be the same)
     cilm′, chi2 = SHExpandLSQ(values′, lat, lon, nmax, lmax; weights=weights)
     @test abs(chi2) < 10 * eps(Float64)
+    if !isapprox(cilm′, cilm)
+        @show maximum(abs.(cilm′ - cilm))
+    end
     @test isapprox(cilm′, cilm; rtol=10 * sqrt(eps(Float64)))
 
     # Convert back to values (result must be the same this time)
