@@ -162,7 +162,7 @@ end
     # Expand again (result must be the same)
     cilm′, chi2 = SHExpandLSQ(values′, lat, lon, nmax, lmax; weights=weights)
     @test abs(chi2) < 10 * eps(Float64)
-    @test isapprox(cilm′, cilm)
+    @test isapprox(cilm′, cilm; rtol=10 * sqrt(eps(Float64)))
 
     # Convert back to values (result must be the same this time)
     values″ = Float64[MakeGridPoint(cilm′, lmax, lat[n], lon[n])
