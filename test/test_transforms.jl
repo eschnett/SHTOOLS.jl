@@ -138,8 +138,8 @@ end
     ni = 4 * (lmax + 1)
     nj = 4 * (lmax + 1)
     nmax = ni * nj
-    lat = vec([(i + rand() - 1 / 2) * 180 / ni for i in 1:ni, j in 1:nj])
-    lon = vec([(j + rand() - 1 / 2) * 360 / nj for i in 1:ni, j in 1:nj])
+    lat = vec([(i + rand() / 2 - 1 / 2) * 180 / ni for i in 1:ni, j in 1:nj])
+    lon = vec([(j + rand() / 2 - 1 / 2) * 360 / nj for i in 1:ni, j in 1:nj])
     values = randn(nmax)
     # A safety check
     @test all(abs.(values) .≤ 100)
@@ -148,6 +148,8 @@ end
     # Expand
     cilm, chi2 = SHExpandLSQ(values, lat, lon, nmax, lmax; weights=weights)
     @test size(cilm) == (2, lmax + 1, lmax + 1)
+    @show maximum(abs.(cilm)) chi2
+    @show cilm
     # We don't calculate all modes necessary to reconstruct all
     # values, hence chi2 will be large
     # @test abs(chi2) < 10 * eps(Float64)
@@ -162,10 +164,7 @@ end
     # Expand again (result must be the same)
     cilm′, chi2 = SHExpandLSQ(values′, lat, lon, nmax, lmax; weights=weights)
     @test abs(chi2) < 10 * eps(Float64)
-    if !isapprox(cilm′, cilm)
-        @show maximum(abs.(cilm′ - cilm))
-    end
-    @test isapprox(cilm′, cilm; rtol=10 * sqrt(eps(Float64)))
+    @test isapprox(cilm′, cilm)
 
     # Convert back to values (result must be the same this time)
     values″ = Float64[MakeGridPoint(cilm′, lmax, lat[n], lon[n])
