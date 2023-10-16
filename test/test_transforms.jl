@@ -148,8 +148,6 @@ end
     # Expand
     cilm, chi2 = SHExpandLSQ(values, lat, lon, nmax, lmax; weights=weights)
     @test size(cilm) == (2, lmax + 1, lmax + 1)
-    @show maximum(abs.(cilm)) chi2
-    @show cilm
     # We don't calculate all modes necessary to reconstruct all
     # values, hence chi2 will be large
     # @test abs(chi2) < 10 * eps(Float64)
