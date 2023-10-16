@@ -993,7 +993,7 @@ function SHExpandLSQ!(cilm::AbstractArray{Cdouble,3},
                       d::AbstractVector{Cdouble}, lat::AbstractVector{Cdouble},
                       lon::AbstractVector{Cdouble}, nmax::Integer,
                       lmax::Integer; norm::Integer=1, csphase::Integer=1,
-                      weights::Vector{Cdouble},
+                      weights::Union{Nothing,AbstractVector{Cdouble}}=nothing,
                       exitstatus::Optional{Ref{<:Integer}}=nothing)
     @assert lmax ≥ 0
     @assert size(cilm, 1) == 2
@@ -1005,14 +1005,14 @@ function SHExpandLSQ!(cilm::AbstractArray{Cdouble,3},
     @assert length(lat) ≥ nmax
     @assert length(lon) ≥ nmax
     @assert norm ∈ (1, 2, 3, 4)
-    @assert length(weights) == nmax
+    @assert weights === nothing || length(weights) == nmax
     chi2′ = Ref{Cdouble}()
     exitstatus′ = Ref{Cint}()
     ccall((:SHExpandLSQ, libSHTOOLS), Cvoid,
           (Ptr{Cdouble}, Cint, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Cdouble}, Cint,
            Cint, Ref{Cint}, Ref{Cdouble}, Ref{Cint}, Ptr{Cdouble}, Ref{Cint}),
           cilm, size(cilm, 2), d, lat, lon, nmax, lmax, norm, chi2′, csphase,
-          weights, exitstatus′)
+          weights === nothing ? Ptr{Cdouble}() : weights, exitstatus′)
     if exitstatus === nothing
         exitstatus′[] ≠ 0 && error("SHExpandLSQ!: Error code $(exitstatus′[])")
     else
@@ -1044,7 +1044,7 @@ See also: [`SHExpandLSQ!`](@ref), [`MakeGridPoint`](@ref),
 function SHExpandLSQ(d::AbstractVector{Cdouble}, lat::AbstractVector{Cdouble},
                      lon::AbstractVector{Cdouble}, nmax::Integer, lmax::Integer;
                      norm::Integer=1, csphase::Integer=1,
-                     weights::Vector{Cdouble},
+                     weights::Union{Nothing,AbstractVector{Cdouble}}=nothing,
                      exitstatus::Optional{Ref{<:Integer}}=nothing)
     @assert lmax ≥ 0
     cilm = Array{Cdouble}(undef, 2, lmax + 1, lmax + 1)
