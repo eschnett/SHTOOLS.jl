@@ -7,5 +7,5 @@ version = "1.4.0"
 SHTOOLS_jll = "ff580fc6-ede1-5b7e-942f-684e38381daf"
 
 [compat]
-SHTOOLS_jll = "4.10.4"
+SHTOOLS_jll = "4.9.1"
 julia = "1.6"
